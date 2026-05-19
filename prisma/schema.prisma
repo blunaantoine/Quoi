@@ -1,0 +1,256 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  username      String   @unique
+  password      String
+  role          String   @default("user") // user, certified, manager, admin
+  isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  isBanned      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  profile       Profile?
+  posts         Post[]
+  comments      Comment[]
+  likes         Like[]
+  following     Follow[]  @relation("UserFollowing")
+  followers     Follow[]  @relation("UserFollowers")
+  savedPosts    SavedPost[]
+  sentMessages  Message[] @relation("MessageSender")
+  conversations Conversation[] @relation("ConversationParticipants")
+  notifications Notification[]
+  reports       Report[]  @relation("Reporter")
+  reportedBy    Report[]  @relation("ReportedUser")
+  adminLogs     AdminLog[]
+  adViews       AdView[]
+  adClicks      AdClick[]
+}
+
+model Profile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  displayName  String
+  bio          String   @default("")
+  avatar       String   @default("")
+  coverPhoto   String   @default("")
+  phone        String   @default("")
+  whatsapp     String   @default("")
+  country      String   @default("")
+  city         String   @default("")
+  website      String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  icon        String   @default("")
+  color       String   @default("")
+  createdAt   DateTime @default(now())
+
+  posts       Post[]
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  image         String    @default("")
+  categorySlug  String
+  externalLink  String    @default("")
+  whatsapp      String    @default("")
+  email         String    @default("")
+  phone         String    @default("")
+  location      String    @default("")
+  eventDate     DateTime?
+  deadlineDate  DateTime?
+  mode          String    @default("presentiel") // en_ligne, presentiel, hybride
+  status        String    @default("pending") // pending, approved, rejected
+  views         Int       @default(0)
+  tags          String    @default("") // comma-separated: nouveau,urgent,verifie
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category      Category  @relation(fields: [categorySlug], references: [slug])
+  comments      Comment[]
+  likes         Like[]
+  savedBy       SavedPost[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  followerId  String
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+model SavedPost {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  participants User[]     @relation("ConversationParticipants")
+  messages     Message[]
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  content        String
+  type           String   @default("text") // text, image, post_share
+  imageUrl       String   @default("")
+  sharedPostId   String   @default("")
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // like, comment, message, post_approved, new_opportunity, deadline_reminder, follow
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String   @default("")
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  reason    String
+  type      String   // post, user, message
+  targetId  String
+  status    String   @default("pending") // pending, reviewed, resolved
+  createdAt DateTime @default(now())
+
+  reporterId String
+  reporter   User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId String
+  reported   User     @relation("ReportedUser", fields: [reportedId], references: [id], onDelete: Cascade)
+}
+
+model Article {
+  id         String   @id @default(cuid())
+  title      String
+  content    String
+  images     String   @default("") // comma-separated URLs
+  status     String   @default("published") // draft, published, archived
+  eventStatus String  @default("upcoming") // upcoming, ongoing, completed
+  views      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  authorId   String
+}
+
+model Ad {
+  id          String   @id @default(cuid())
+  title       String
+  image       String
+  link        String   @default("")
+  type        String   @default("flyer") // flyer, image, external_link
+  targetAudience String @default("all")
+  isActive    Boolean  @default(true)
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  views       AdView[]
+  clickLogs   AdClick[]
+}
+
+model AdView {
+  id        String   @id @default(cuid())
+  viewedAt  DateTime @default(now())
+
+  adId      String
+  ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdClick {
+  id        String   @id @default(cuid())
+  clickedAt DateTime @default(now())
+
+  adId      String
+  ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   String   @default("")
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
