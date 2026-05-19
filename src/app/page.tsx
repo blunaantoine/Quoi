@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import {
   Home,
   Newspaper,
@@ -9,14 +9,25 @@ import {
   User,
 } from 'lucide-react'
 import { useAppStore, TabType } from '@/lib/store'
-import HomeScreen from '@/components/screens/HomeScreen'
-import NewsScreen from '@/components/screens/NewsScreen'
-import AddScreen from '@/components/screens/AddScreen'
-import MessagesScreen from '@/components/screens/MessagesScreen'
-import ProfileScreen from '@/components/screens/ProfileScreen'
-import { NotificationsPanel } from '@/components/oppy/notifications-panel'
-import { SearchOverlay } from '@/components/oppy/search-overlay'
-import { AdOverlay } from '@/components/oppy/ad-overlay'
+
+// Dynamic imports for all screen components to reduce initial bundle size
+const HomeScreen = dynamic(() => import('@/components/screens/HomeScreen'), { ssr: false })
+const NewsScreen = dynamic(() => import('@/components/screens/NewsScreen'), { ssr: false })
+const AddScreen = dynamic(() => import('@/components/screens/AddScreen'), { ssr: false })
+const MessagesScreen = dynamic(() => import('@/components/screens/MessagesScreen'), { ssr: false })
+const ProfileScreen = dynamic(() => import('@/components/screens/ProfileScreen'), { ssr: false })
+const NotificationsPanel = dynamic(
+  () => import('@/components/oppy/notifications-panel').then((mod) => ({ default: mod.NotificationsPanel })),
+  { ssr: false }
+)
+const SearchOverlay = dynamic(
+  () => import('@/components/oppy/search-overlay').then((mod) => ({ default: mod.SearchOverlay })),
+  { ssr: false }
+)
+const AdOverlay = dynamic(
+  () => import('@/components/oppy/ad-overlay').then((mod) => ({ default: mod.AdOverlay })),
+  { ssr: false }
+)
 
 const NAV_ITEMS: { tab: TabType; label: string; icon: typeof Home; isAdd?: boolean }[] = [
   { tab: 'home', label: 'Accueil', icon: Home },
@@ -69,14 +80,12 @@ function BottomNav() {
                       }`}
                       strokeWidth={isActive ? 2.5 : 2}
                     />
-                    {/* Active indicator dot */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeTab"
-                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D1F550]"
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      />
-                    )}
+                    {/* Active indicator dot - CSS transition instead of layoutId */}
+                    <div
+                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D1F550] transition-all duration-300 ${
+                        isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                      }`}
+                    />
                     {/* Unread badge */}
                     {item.tab === 'messages' && unreadMessages > 0 && (
                       <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center">
@@ -119,37 +128,26 @@ function ScreenRenderer() {
   // Other screens use standard scrollable layout with bottom padding
   if (activeTab === 'home') {
     return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="h-[calc(100vh-64px)]"
-        >
-          {screens[activeTab]}
-        </motion.div>
-      </AnimatePresence>
+      <div
+        key={activeTab}
+        className="h-[calc(100vh-64px)] animate-fade-in"
+      >
+        {screens[activeTab]}
+      </div>
     )
   }
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
-      >
-        {screens[activeTab]}
-      </motion.div>
-    </AnimatePresence>
+    <div
+      key={activeTab}
+      className="animate-fade-slide-in"
+    >
+      {screens[activeTab]}
+    </div>
   )
 }
 
-export default function Home() {
+export default function OppyHome() {
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
       {/* Mobile-first container, centered on desktop */}

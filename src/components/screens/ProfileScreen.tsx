@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from 'react'
 import Image from 'next/image'
 import {
   Settings,
@@ -215,15 +214,10 @@ export default function ProfileScreen() {
           {/* Publications Tab - Grid of posts */}
           <TabsContent value="publications" className="mt-3">
             <div className="grid grid-cols-2 gap-2">
-              {displayPosts.map((post, idx) => (
-                <motion.div
-                  key={post.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.05 }}
-                >
+              {displayPosts.map((post) => (
+                <div key={post.id} className="animate-fade-slide-in">
                   <PostGridCard post={post} />
-                </motion.div>
+                </div>
               ))}
             </div>
           </TabsContent>
@@ -232,15 +226,10 @@ export default function ProfileScreen() {
           <TabsContent value="saved" className="mt-3">
             {savedPosts.length > 0 ? (
               <div className="grid grid-cols-2 gap-2">
-                {savedPosts.map((post, idx) => (
-                  <motion.div
-                    key={post.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
+                {savedPosts.map((post) => (
+                  <div key={post.id} className="animate-fade-slide-in">
                     <PostGridCard post={post} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -255,15 +244,10 @@ export default function ProfileScreen() {
           <TabsContent value="liked" className="mt-3">
             {likedPosts.length > 0 ? (
               <div className="grid grid-cols-2 gap-2">
-                {likedPosts.map((post, idx) => (
-                  <motion.div
-                    key={post.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
+                {likedPosts.map((post) => (
+                  <div key={post.id} className="animate-fade-slide-in">
                     <PostGridCard post={post} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             ) : (

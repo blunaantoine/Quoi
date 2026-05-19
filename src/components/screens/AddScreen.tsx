@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import {
   Upload,
@@ -183,11 +182,7 @@ export default function AddScreen() {
             <ChevronDown className={`w-4 h-4 text-[#A3A3A3] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
           </button>
           {showCategoryDropdown && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="absolute z-30 w-full mt-1 bg-[#1A1A1A] border border-[#333333] rounded-xl overflow-hidden shadow-xl shadow-black/40"
-            >
+            <div className="absolute z-30 w-full mt-1 bg-[#1A1A1A] border border-[#333333] rounded-xl overflow-hidden shadow-xl shadow-black/40 animate-fade-slide-in">
               {categories.map((cat) => {
                 const Icon = cat.icon
                 return (
@@ -207,7 +202,7 @@ export default function AddScreen() {
                   </button>
                 )
               })}
-            </motion.div>
+            </div>
           )}
         </div>
 

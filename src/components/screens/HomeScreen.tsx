@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef, useMemo } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
   Search,
@@ -57,14 +56,6 @@ const modeStyles: Record<string, string> = {
   'En ligne': 'bg-sky-500/20 text-sky-400 border-sky-500/40',
   'Présentiel': 'bg-amber-500/20 text-amber-400 border-amber-500/40',
   Hybride: 'bg-violet-500/20 text-violet-400 border-violet-500/40',
-}
-
-// ─── Heart animation keyframes ──────────────────────────────────
-
-const heartPop = {
-  initial: { scale: 0, opacity: 0 },
-  animate: { scale: [0, 1.4, 1], opacity: [0, 1, 1] },
-  exit: { scale: 0, opacity: 0 },
 }
 
 // ─── Format number compactly ────────────────────────────────────
@@ -158,18 +149,12 @@ function FeedCard({ post }: { post: OppPost }) {
         })}
       </div>
 
-      {/* ── Double-tap heart animation ── */}
-      <AnimatePresence>
-        {showHeart && (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
-            {...heartPop}
-            transition={{ duration: 0.5 }}
-          >
-            <Heart className="h-24 w-24 text-red-500 fill-red-500 drop-shadow-lg" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── Double-tap heart animation (CSS instead of framer-motion) ── */}
+      {showHeart && (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center animate-heart-pop">
+          <Heart className="h-24 w-24 text-red-500 fill-red-500 drop-shadow-lg" />
+        </div>
+      )}
 
       {/* ── Bottom content ── */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pb-5">
@@ -284,17 +269,15 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={toggleLike}
-              className="flex flex-col items-center gap-0.5"
+              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
               aria-label={liked ? 'Retirer le like' : 'Aimer'}
             >
-              <motion.div whileTap={{ scale: 0.8 }}>
-                <Heart
-                  className={cn(
-                    'h-7 w-7 transition-colors drop-shadow-lg',
-                    liked ? 'fill-red-500 text-red-500' : 'text-white'
-                  )}
-                />
-              </motion.div>
+              <Heart
+                className={cn(
+                  'h-7 w-7 transition-colors drop-shadow-lg',
+                  liked ? 'fill-red-500 text-red-500' : 'text-white'
+                )}
+              />
               <span className="text-[11px] font-semibold text-white drop-shadow">
                 {formatCount(likeCount)}
               </span>
@@ -330,17 +313,15 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={toggleSave}
-              className="flex flex-col items-center gap-0.5"
+              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
               aria-label={saved ? 'Retirer des favoris' : 'Enregistrer'}
             >
-              <motion.div whileTap={{ scale: 0.8 }}>
-                <Bookmark
-                  className={cn(
-                    'h-7 w-7 transition-colors drop-shadow-lg',
-                    saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
-                  )}
-                />
-              </motion.div>
+              <Bookmark
+                className={cn(
+                  'h-7 w-7 transition-colors drop-shadow-lg',
+                  saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
+                )}
+              />
               <span className="text-[11px] font-semibold text-white drop-shadow">
                 {formatCount(post.saves)}
               </span>
@@ -394,66 +375,50 @@ export default function HomeScreen() {
       <div className="absolute inset-x-0 top-0 z-30 pointer-events-none">
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <div className="flex items-center gap-2 pointer-events-auto">
-            <motion.div
-              className="flex items-center gap-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4 }}
-            >
+            <div className="flex items-center gap-2 animate-slide-down">
               <div className="w-8 h-8 rounded-lg bg-[#D1F550] flex items-center justify-center shadow-lg shadow-[#D1F550]/20">
                 <Zap className="w-5 h-5 text-[#0A0A0A]" />
               </div>
               <h1 className="text-xl font-bold text-white drop-shadow-lg">
                 OPP<span className="text-[#D1F550]">Y</span>
               </h1>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.button
-            className="pointer-events-auto h-9 w-9 rounded-full bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#333333]/50 flex items-center justify-center text-[#A3A3A3] hover:text-white hover:bg-[#262626] transition-colors"
+          <button
+            className="pointer-events-auto h-9 w-9 rounded-full bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#333333]/50 flex items-center justify-center text-[#A3A3A3] hover:text-white hover:bg-[#262626] transition-colors animate-slide-down active:scale-90"
             onClick={() => setShowSearch(!showSearch)}
-            whileTap={{ scale: 0.9 }}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            style={{ animationDelay: '0.1s' }}
           >
             <Search className="w-4 h-4" />
-          </motion.button>
+          </button>
         </div>
 
         {/* Search bar (expandable) */}
-        <AnimatePresence>
-          {showSearch && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden pointer-events-auto"
-            >
-              <div className="px-4 pb-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
-                  <input
-                    type="text"
-                    placeholder="Rechercher des opportunités..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 bg-[#1A1A1A]/90 backdrop-blur-sm border border-[#333333] text-white placeholder:text-[#A3A3A3] rounded-xl h-10 text-sm focus:outline-none focus:border-[#D1F550]/50 focus:ring-1 focus:ring-[#D1F550]/20 transition-all"
-                    autoFocus
-                  />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div
+          className={`overflow-hidden pointer-events-auto transition-all duration-200 ${
+            showSearch ? 'max-h-16 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-4 pb-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
+              <input
+                type="text"
+                placeholder="Rechercher des opportunités..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 bg-[#1A1A1A]/90 backdrop-blur-sm border border-[#333333] text-white placeholder:text-[#A3A3A3] rounded-xl h-10 text-sm focus:outline-none focus:border-[#D1F550]/50 focus:ring-1 focus:ring-[#D1F550]/20 transition-all"
+                autoFocus
+              />
+            </div>
+          </div>
+        </div>
 
         {/* ── Category filter pills ── */}
-        <motion.div
-          className="pointer-events-auto px-4 pb-3 flex gap-2 overflow-x-auto no-scrollbar"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
+        <div
+          className="pointer-events-auto px-4 pb-3 flex gap-2 overflow-x-auto no-scrollbar animate-slide-down"
+          style={{ animationDelay: '0.15s' }}
         >
           {/* All pill */}
           <button
@@ -487,7 +452,7 @@ export default function HomeScreen() {
               </button>
             )
           })}
-        </motion.div>
+        </div>
 
         {/* Fade gradient at bottom of header */}
         <div className="h-4 bg-gradient-to-b from-[#0A0A0A]/60 to-transparent pointer-events-none" />
@@ -503,31 +468,24 @@ export default function HomeScreen() {
         }}
       >
         {filteredPosts.length > 0 ? (
-          filteredPosts.map((post, index) => (
-            <motion.div
+          filteredPosts.map((post) => (
+            <div
               key={post.id}
-              className="w-full"
+              className="w-full animate-fade-in"
               style={{
                 height: 'calc(100vh - 64px)',
                 scrollSnapAlign: 'start',
               }}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index === 0 ? 0 : 0.05 }}
             >
               <FeedCard post={post} />
-            </motion.div>
+            </div>
           ))
         ) : (
           <div
             className="flex flex-col items-center justify-center text-center px-8"
             style={{ height: 'calc(100vh - 64px)' }}
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
+            <div className="animate-fade-slide-in">
               <div className="w-16 h-16 rounded-2xl bg-[#1A1A1A] border border-[#333333] flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-[#A3A3A3]" />
               </div>
@@ -546,7 +504,7 @@ export default function HomeScreen() {
               >
                 Voir toutes les opportunités
               </button>
-            </motion.div>
+            </div>
           </div>
         )}
       </div>

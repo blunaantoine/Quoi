@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   MessageCircle,
@@ -56,14 +55,6 @@ const modeStyles: Record<string, string> = {
   'En ligne': 'bg-sky-500/20 text-sky-400 border-sky-500/40',
   'Présentiel': 'bg-amber-500/20 text-amber-400 border-amber-500/40',
   Hybride: 'bg-violet-500/20 text-violet-400 border-violet-500/40',
-};
-
-// ─── Heart animation keyframes ────────────────────────────────────
-
-const heartPop = {
-  initial: { scale: 0, opacity: 0 },
-  animate: { scale: [0, 1.4, 1], opacity: [0, 1, 1] },
-  exit: { scale: 0, opacity: 0 },
 };
 
 // ─── Component ────────────────────────────────────────────────────
@@ -149,18 +140,12 @@ export function OppCard({ post, className }: OppCardProps) {
         })}
       </div>
 
-      {/* ── Double-tap heart animation ── */}
-      <AnimatePresence>
-        {showHeart && (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
-            {...heartPop}
-            transition={{ duration: 0.5 }}
-          >
-            <Heart className="h-24 w-24 text-red-500 fill-red-500 drop-shadow-lg" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── Double-tap heart animation (CSS) ── */}
+      {showHeart && (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center animate-heart-pop">
+          <Heart className="h-24 w-24 text-red-500 fill-red-500 drop-shadow-lg" />
+        </div>
+      )}
 
       {/* ── Bottom content ── */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pb-6">
@@ -239,17 +224,15 @@ export function OppCard({ post, className }: OppCardProps) {
             <button
               type="button"
               onClick={toggleLike}
-              className="flex flex-col items-center gap-0.5"
+              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
               aria-label={liked ? 'Retirer le like' : 'Aimer'}
             >
-              <motion.div whileTap={{ scale: 0.8 }}>
-                <Heart
-                  className={cn(
-                    'h-7 w-7 transition-colors',
-                    liked ? 'fill-red-500 text-red-500' : 'text-white'
-                  )}
-                />
-              </motion.div>
+              <Heart
+                className={cn(
+                  'h-7 w-7 transition-colors',
+                  liked ? 'fill-red-500 text-red-500' : 'text-white'
+                )}
+              />
               <span className="text-xs font-semibold text-white">
                 {likeCount}
               </span>
@@ -285,17 +268,15 @@ export function OppCard({ post, className }: OppCardProps) {
             <button
               type="button"
               onClick={toggleSave}
-              className="flex flex-col items-center gap-0.5"
+              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
               aria-label={saved ? 'Retirer des favoris' : 'Enregistrer'}
             >
-              <motion.div whileTap={{ scale: 0.8 }}>
-                <Bookmark
-                  className={cn(
-                    'h-7 w-7 transition-colors',
-                    saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
-                  )}
-                />
-              </motion.div>
+              <Bookmark
+                className={cn(
+                  'h-7 w-7 transition-colors',
+                  saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
+                )}
+              />
               <span className="text-xs font-semibold text-white">
                 {post.saves}
               </span>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import {
   Bell,
@@ -44,16 +43,11 @@ function formatDate(dateStr: string): string {
 
 // ─── Article Card ─────────────────────────────────────────────────
 
-function ArticleCard({ article, index }: { article: Article; index: number }) {
+function ArticleCard({ article }: { article: Article }) {
   const s = statusStyles[article.status]
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.3 }}
-      className="group"
-    >
+    <article className="group animate-fade-slide-in">
       <div className="bg-[#1A1A1A] rounded-2xl border border-[#333333] overflow-hidden hover:border-[#D1F550]/30 transition-all active:scale-[0.98] cursor-pointer">
         {/* Image thumbnail */}
         <div className="relative h-44 w-full overflow-hidden">
@@ -123,7 +117,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
           </div>
         </div>
       </div>
-    </motion.article>
+    </article>
   )
 }
 
@@ -214,21 +208,15 @@ export default function NewsScreen() {
 
       {/* Articles Feed */}
       <div className="px-4 pb-24 pt-3 space-y-3">
-        <AnimatePresence mode="popLayout">
-          {filteredArticles.length > 0 ? (
-            filteredArticles.map((article, index) => (
-              <ArticleCard key={article.id} article={article} index={index} />
-            ))
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-12"
-            >
-              <p className="text-[#A3A3A3] text-sm">Aucun article trouvé</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {filteredArticles.length > 0 ? (
+          filteredArticles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))
+        ) : (
+          <div className="text-center py-12 animate-fade-in">
+            <p className="text-[#A3A3A3] text-sm">Aucun article trouvé</p>
+          </div>
+        )}
       </div>
     </div>
   )

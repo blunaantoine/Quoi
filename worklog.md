@@ -134,3 +134,33 @@ Work Log:
 Stage Summary:
 - Application fully functional with all features
 - Ready for preview at / route
+
+---
+Task ID: 1
+Agent: Sub-agent
+Task: Rewrite OPPY without framer-motion to fix OOM
+
+Work Log:
+- Added new CSS keyframe animations to globals.css: heartPop, slideOutRight, scaleUp, fadeSlideIn, typingDot1/2/3
+- Added new CSS utility classes: animate-heart-pop, animate-scale-up, animate-fade-slide-in, animate-typing-dot-1/2/3, panel-slide-enter/exit, tab-indicator
+- Rewrote page.tsx: replaced framer-motion AnimatePresence/motion.div with CSS animate-fade-in and animate-fade-slide-in; used next/dynamic with ssr:false for all 5 screen components + 3 overlay components; renamed export from Home to OppyHome to avoid conflict with lucide-react Home icon; replaced layoutId tab indicator with CSS opacity/scale transition
+- Rewrote HomeScreen.tsx: removed all framer-motion imports; replaced AnimatePresence heart animation with CSS animate-heart-pop; replaced motion.div feed items with plain divs using animate-fade-in; replaced motion.div header/logo with animate-slide-down; replaced expandable search AnimatePresence with CSS max-h/opacity transition; replaced whileTap={{scale:0.8}} with active:scale-80 transition-transform
+- Rewrote NewsScreen.tsx: removed framer-motion imports; replaced motion.article with animate-fade-slide-in; removed AnimatePresence wrapper; simplified empty state
+- Rewrote AddScreen.tsx: removed framer-motion import; replaced motion.div dropdown with animate-fade-slide-in
+- Rewrote MessagesScreen.tsx: removed framer-motion imports; replaced motion.div messages with animate-fade-slide-in; replaced AnimatePresence typing indicator with conditional render + animate-fade-slide-in; replaced motion.span typing dots with CSS animate-typing-dot-1/2/3; replaced motion.button conversation items with animate-fade-slide-in
+- Rewrote ProfileScreen.tsx: removed framer-motion import; replaced motion.div grid items with animate-fade-slide-in
+- Rewrote opp-card.tsx: removed framer-motion imports; replaced AnimatePresence heart with CSS animate-heart-pop; replaced whileTap on Like/Save buttons with active:scale-80 transition-transform
+- Rewrote notifications-panel.tsx: removed framer-motion imports; replaced AnimatePresence with conditional rendering; replaced motion.div backdrop with animate-fade-in; replaced motion.div slide-in panel with animate-slide-in-right; replaced motion.button notification items with animate-fade-slide-in
+- Rewrote search-overlay.tsx: removed framer-motion imports; replaced AnimatePresence with conditional rendering; replaced motion.div overlay with animate-fade-in; replaced motion.div search result items with animate-fade-slide-in
+- Rewrote ad-overlay.tsx: removed framer-motion imports; replaced AnimatePresence with conditional rendering; replaced motion.div backdrop with animate-fade-in; replaced motion.div modal with animate-scale-up
+- Ran lint: 0 errors
+- Verified no remaining framer-motion imports in src/
+- Deleted page.tsx.bak backup file
+
+Stage Summary:
+- All 10 files rewritten to remove framer-motion completely
+- All animations replaced with CSS transitions and keyframe animations
+- All screen components use dynamic imports (next/dynamic, ssr:false) to reduce initial bundle size
+- Export renamed from Home to OppyHome to avoid lucide-react icon naming conflict
+- Lint passes with 0 errors
+- Dev server running correctly on port 3000

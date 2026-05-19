@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import {
   MessageSquare,
@@ -286,12 +285,9 @@ function ChatView({
             idx === messages.length - 1 || messages[idx + 1]?.senderId !== msg.senderId
 
           return (
-            <motion.div
+            <div
               key={msg.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${isSent ? 'justify-end' : 'justify-start'} animate-fade-slide-in`}
             >
               <div
                 className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
@@ -324,47 +320,27 @@ function ChatView({
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )
         })}
 
         {/* Typing Indicator */}
-        <AnimatePresence>
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2 }}
-              className="flex justify-start"
-            >
-              <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl rounded-bl-md px-4 py-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-1">
-                    <motion.span
-                      className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full"
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                    />
-                    <motion.span
-                      className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full"
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
-                    />
-                    <motion.span
-                      className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full"
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
-                    />
-                  </div>
-                  <span className="text-xs text-[#A3A3A3] ml-1">
-                    {typingUserName ? `${typingUserName} écrit` : 'en train d\'écrire'}...
-                  </span>
+        {isTyping && (
+          <div className="flex justify-start animate-fade-slide-in">
+            <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="flex items-center gap-1.5">
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-typing-dot-1" />
+                  <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-typing-dot-2" />
+                  <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-typing-dot-3" />
                 </div>
+                <span className="text-xs text-[#A3A3A3] ml-1">
+                  {typingUserName ? `${typingUserName} écrit` : 'en train d\'écrire'}...
+                </span>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Input Bar */}
@@ -542,17 +518,14 @@ export default function MessagesScreen() {
           Conversations récentes
         </h3>
         <div className="space-y-1">
-          {filteredConversations.map((conv, index) => {
+          {filteredConversations.map((conv) => {
             const p = conv.participant
             const isOnline = onlineUserIds.has(p.id)
             return (
-              <motion.button
+              <button
                 key={conv.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
                 onClick={() => setSelectedConversation(conv)}
-                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1A1A] transition-colors text-left active:bg-[#262626]"
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1A1A] transition-colors text-left active:bg-[#262626] animate-fade-slide-in"
               >
                 {/* Avatar */}
                 <div className="relative shrink-0">
@@ -595,7 +568,7 @@ export default function MessagesScreen() {
                     )}
                   </div>
                 </div>
-              </motion.button>
+              </button>
             )
           })}
 
