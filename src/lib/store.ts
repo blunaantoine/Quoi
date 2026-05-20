@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 export type TabType = 'home' | 'news' | 'add' | 'messages' | 'profile'
+export type AuthView = 'landing' | 'login' | 'signup'
 
 export interface User {
   id: string
@@ -28,6 +29,13 @@ interface AppState {
   // Navigation
   activeTab: TabType
   setActiveTab: (tab: TabType) => void
+
+  // Auth
+  isLoggedIn: boolean
+  authView: AuthView
+  setLoggedIn: (loggedIn: boolean) => void
+  setAuthView: (view: AuthView) => void
+  logout: () => void
 
   // User
   currentUser: User
@@ -105,6 +113,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Navigation
   activeTab: 'home',
   setActiveTab: (tab) => set({ activeTab: tab }),
+
+  // Auth
+  isLoggedIn: false,
+  authView: 'landing',
+  setLoggedIn: (loggedIn) => set({ isLoggedIn: loggedIn }),
+  setAuthView: (view) => set({ authView: view }),
+  logout: () => set({ isLoggedIn: false, authView: 'landing', activeTab: 'home' }),
 
   // Current User
   currentUser: {

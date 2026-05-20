@@ -1,0 +1,112 @@
+'use client'
+
+import { Rocket, Users, Globe, TrendingUp, Sparkles, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useAppStore } from '@/lib/store'
+
+export default function LandingScreen() {
+  const { setAuthView } = useAppStore()
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Hero Section */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-primary/40 animate-float" />
+          <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 rounded-full bg-primary/30 animate-float" style={{ animationDelay: '0.5s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-2.5 h-2.5 rounded-full bg-primary/20 animate-float" style={{ animationDelay: '1s' }} />
+        </div>
+
+        {/* Logo & Title */}
+        <div className="relative z-10 text-center mb-8 animate-fade-slide-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 mb-6 animate-pulse-lime">
+            <Rocket className="w-10 h-10 text-primary" />
+          </div>
+          <h1 className="text-4xl font-extrabold text-foreground mb-2">
+            Oppy
+            <span className="gradient-text">tunité</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-xs mx-auto leading-relaxed">
+            Le réseau social qui connecte les talents aux opportunités
+          </p>
+        </div>
+
+        {/* Feature cards */}
+        <div className="relative z-10 w-full max-w-sm space-y-3 mb-10">
+          {[
+            {
+              icon: TrendingUp,
+              title: 'Opportunités',
+              desc: 'Bourses, emplois, concours, événements',
+              color: 'text-green-500',
+            },
+            {
+              icon: Users,
+              title: 'Communauté',
+              desc: 'Connectez-vous avec des jeunes ambitieux',
+              color: 'text-primary',
+            },
+            {
+              icon: Globe,
+              title: 'International',
+              desc: 'Opportunités en Afrique et dans le monde',
+              color: 'text-sky-500',
+            },
+          ].map((feature, i) => (
+            <div
+              key={feature.title}
+              className="flex items-center gap-4 bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 animate-fade-slide-in"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
+                <feature.icon className={`w-5 h-5 ${feature.color}`} />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">{feature.title}</h3>
+                <p className="text-xs text-muted-foreground">{feature.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA Buttons */}
+        <div className="relative z-10 w-full max-w-sm space-y-3 animate-fade-slide-in" style={{ animationDelay: '300ms' }}>
+          <Button
+            onClick={() => setAuthView('signup')}
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-2xl h-13 text-base gap-2 lime-glow"
+          >
+            <Sparkles className="w-5 h-5" />
+            Créer un compte
+          </Button>
+          <Button
+            onClick={() => setAuthView('login')}
+            variant="outline"
+            className="w-full border-border text-foreground hover:bg-secondary hover:border-primary/30 font-semibold rounded-2xl h-12 text-base gap-2"
+          >
+            Se connecter
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Terms */}
+        <p className="relative z-10 text-[11px] text-muted-foreground text-center mt-6 max-w-xs leading-relaxed">
+          En continuant, vous acceptez nos{' '}
+          <span className="text-primary cursor-pointer hover:underline">Conditions d&apos;utilisation</span>{' '}
+          et notre{' '}
+          <span className="text-primary cursor-pointer hover:underline">Politique de confidentialité</span>
+        </p>
+      </div>
+
+      {/* Bottom decoration */}
+      <div className="px-6 pb-8 pt-4">
+        <div className="flex items-center justify-center gap-1.5 text-muted-foreground/60">
+          <Rocket className="w-3.5 h-3.5" />
+          <span className="text-xs font-medium">OPPY — L&apos;avenir vous attend</span>
+        </div>
+      </div>
+    </div>
+  )
+}

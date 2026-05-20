@@ -11,6 +11,9 @@ import {
 import { useAppStore, TabType } from '@/lib/store'
 
 // Dynamic imports for all screen components to reduce initial bundle size
+const LandingScreen = dynamic(() => import('@/components/screens/LandingScreen'), { ssr: false })
+const LoginScreen = dynamic(() => import('@/components/screens/LoginScreen'), { ssr: false })
+const SignupScreen = dynamic(() => import('@/components/screens/SignupScreen'), { ssr: false })
 const HomeScreen = dynamic(() => import('@/components/screens/HomeScreen'), { ssr: false })
 const NewsScreen = dynamic(() => import('@/components/screens/NewsScreen'), { ssr: false })
 const AddScreen = dynamic(() => import('@/components/screens/AddScreen'), { ssr: false })
@@ -113,6 +116,19 @@ function BottomNav() {
   )
 }
 
+function AuthFlow() {
+  const { authView } = useAppStore()
+
+  switch (authView) {
+    case 'login':
+      return <LoginScreen />
+    case 'signup':
+      return <SignupScreen />
+    default:
+      return <LandingScreen />
+  }
+}
+
 function ScreenRenderer() {
   const { activeTab } = useAppStore()
 
@@ -148,6 +164,20 @@ function ScreenRenderer() {
 }
 
 export default function OppyHome() {
+  const { isLoggedIn } = useAppStore()
+
+  // Show auth flow if not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-lg min-h-screen relative bg-background shadow-2xl shadow-black/50">
+          <AuthFlow />
+        </div>
+      </div>
+    )
+  }
+
+  // Show main app when logged in
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile-first container, centered on desktop */}

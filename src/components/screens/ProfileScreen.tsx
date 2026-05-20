@@ -30,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CategoryBadge } from '@/components/oppy/category-badge'
 import { ThemeToggle } from '@/components/oppy/theme-toggle'
 import { toast } from 'sonner'
+import { useAppStore } from '@/lib/store'
 import {
   currentUser,
   mockPosts,
@@ -331,7 +332,12 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
 
             {/* Déconnexion */}
             <button
-              onClick={() => toast('Déconnexion...')}
+              onClick={() => {
+                onClose()
+                const { logout } = useAppStore.getState()
+                logout()
+                toast('Déconnexion réussie')
+              }}
               className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
             >
               <LogOut className="w-5 h-5" />
