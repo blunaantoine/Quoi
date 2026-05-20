@@ -23,7 +23,7 @@ export default function LandingScreen() {
 
         {/* Logo & Title */}
         <div className="relative z-10 text-center mb-12 animate-fade-slide-in">
-          <div className="inline-flex items-center justify-center w-32 h-32 mb-8 animate-pulse-lime">
+          <div className="inline-flex items-center justify-center w-32 h-32 mb-8">
             <Image
               src="/oqui-logo.png"
               alt="OQUI Logo"

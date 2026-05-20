@@ -50,5 +50,27 @@ test
 prompt
 
 server.log
+
+# Database
+db/*.db
+db/*.db-journal
+
+# Uploads (user content)
+/upload/
+
 # Skills directory
 /skills/
+
+# Mini services
+/mini-services/
+
+# Agent context
+/agent-ctx/
+
+# Daemon & scripts
+daemon.py
+run-forever.sh
+keep-alive.sh
+run-server.sh
+start.sh
+start-server.sh
