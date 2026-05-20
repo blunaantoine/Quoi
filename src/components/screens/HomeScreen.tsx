@@ -131,7 +131,7 @@ function ShareSheet() {
       icon: Send,
       label: 'Partager par email',
       action: () => {
-        window.open(`mailto:?subject=${encodeURIComponent('Découvrez cette opportunité sur OPPY')}&body=${encodeURIComponent(window.location.href)}`)
+        window.open(`mailto:?subject=${encodeURIComponent('Découvrez cette opportunité sur OQUI')}&body=${encodeURIComponent(window.location.href)}`)
         setShowShareSheet(false)
       },
     },

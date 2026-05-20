@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OPPY - Réseau Social d'Opportunités",
+  title: "OQUI - Réseau Social d'Opportunités",
   description:
     "Découvrez et partagez des opportunités professionnelles. Le réseau social qui connecte les talents aux opportunités.",
   keywords: [
-    "OPPY",
+    "OQUI",
     "opportunités",
     "réseau social",
     "professionnel",
@@ -27,20 +27,25 @@ export const metadata: Metadata = {
     "emploi",
     "networking",
   ],
-  authors: [{ name: "OPPY" }],
+  authors: [{ name: "OQUI" }],
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>",
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "OPPY - Réseau Social d'Opportunités",
+    title: "OQUI - Réseau Social d'Opportunités",
     description:
       "Découvrez et partagez des opportunités professionnelles. Le réseau social qui connecte les talents aux opportunités.",
-    siteName: "OPPY",
+    siteName: "OQUI",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "OPPY - Réseau Social d'Opportunités",
+    title: "OQUI - Réseau Social d'Opportunités",
     description:
       "Découvrez et partagez des opportunités professionnelles. Le réseau social qui connecte les talents aux opportunités.",
   },

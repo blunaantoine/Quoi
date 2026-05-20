@@ -176,7 +176,7 @@ export default function SignupScreen() {
             </div>
             {username && (
               <p className="text-[11px] text-muted-foreground mt-1">
-                Votre profil : oppy.sn/{username}
+                Votre profil : oqui.app/{username}
               </p>
             )}
           </div>

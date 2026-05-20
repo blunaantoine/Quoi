@@ -92,7 +92,7 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState(currentUser.name)
   const [bio, setBio] = useState('Étudiante passionnée par les opportunités africaines 🌍 | Tech & Innovation | Dakar 🇸🇳')
   const [location, setLocation] = useState('Dakar, Sénégal')
-  const [website, setWebsite] = useState('oppy.sn/amina')
+  const [website, setWebsite] = useState('oqui.app/amina')
 
   const handleSave = useCallback(() => {
     toast('Profil mis à jour !')
@@ -582,7 +582,7 @@ export default function ProfileScreen() {
           </span>
           <span className="flex items-center gap-1">
             <LinkIcon className="w-3.5 h-3.5 text-primary" />
-            <a href="#" className="text-primary hover:underline">oppy.sn/amina</a>
+            <a href="#" className="text-primary hover:underline">oqui.app/amina</a>
           </span>
         </div>
 

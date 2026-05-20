@@ -1,6 +1,7 @@
 'use client'
 
-import { Rocket, Users, Globe, TrendingUp, Sparkles, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { Users, Globe, TrendingUp, Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/lib/store'
 
@@ -22,12 +23,18 @@ export default function LandingScreen() {
 
         {/* Logo & Title */}
         <div className="relative z-10 text-center mb-8 animate-fade-slide-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 mb-6 animate-pulse-lime">
-            <Rocket className="w-10 h-10 text-primary" />
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-primary/10 mb-6 animate-pulse-lime overflow-hidden">
+            <Image
+              src="/android-chrome-192x192.png"
+              alt="OQUI Logo"
+              width={96}
+              height={96}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
           <h1 className="text-4xl font-extrabold text-foreground mb-2">
-            Oppy
-            <span className="gradient-text">tunité</span>
+            O<span className="gradient-text">QUI</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-xs mx-auto leading-relaxed">
             Le réseau social qui connecte les talents aux opportunités
@@ -103,8 +110,8 @@ export default function LandingScreen() {
       {/* Bottom decoration */}
       <div className="px-6 pb-8 pt-4">
         <div className="flex items-center justify-center gap-1.5 text-muted-foreground/60">
-          <Rocket className="w-3.5 h-3.5" />
-          <span className="text-xs font-medium">OPPY — L&apos;avenir vous attend</span>
+          <Image src="/favicon-32x32.png" alt="OQUI" width={14} height={14} />
+          <span className="text-xs font-medium">OQUI — L&apos;avenir vous attend</span>
         </div>
       </div>
     </div>

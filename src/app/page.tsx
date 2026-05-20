@@ -163,7 +163,7 @@ function ScreenRenderer() {
   )
 }
 
-export default function OppyHome() {
+export default function OquiHome() {
   const { isLoggedIn } = useAppStore()
 
   // Show auth flow if not logged in
