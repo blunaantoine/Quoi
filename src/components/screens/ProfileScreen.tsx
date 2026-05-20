@@ -8,7 +8,6 @@ import {
   LinkIcon,
   Edit3,
   Share2,
-  BadgeCheck,
   Heart,
   Bookmark,
   Grid3X3,
@@ -28,6 +27,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CategoryBadge } from '@/components/oppy/category-badge'
+import { VerifiedBadge } from '@/components/oppy/verified-badge'
 import { ThemeToggle } from '@/components/oppy/theme-toggle'
 import { toast } from 'sonner'
 import { useAppStore } from '@/lib/store'
@@ -559,8 +559,8 @@ export default function ProfileScreen() {
             />
           </div>
           {currentUser.verified && (
-            <span className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-primary w-7 h-7">
-              <BadgeCheck className="w-5 h-5 text-primary-foreground" strokeWidth={3} />
+            <span className="absolute -bottom-1 -right-1">
+              <VerifiedBadge size="lg" />
             </span>
           )}
         </div>

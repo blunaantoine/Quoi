@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { BadgeCheck } from 'lucide-react';
+import { VerifiedBadge } from './verified-badge';
 import { cn } from '@/lib/utils';
 import type { OppUser } from '@/lib/mock-data';
 
@@ -41,16 +41,11 @@ export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
         />
       </div>
 
-      {/* Verified badge */}
+      {/* Verified badge — TikTok-style blue/white */}
       {user.verified && (
-        <span
-          className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full bg-primary"
-          style={{ width: s.badge, height: s.badge }}
-        >
-          <BadgeCheck
-            style={{ width: s.badge - 2, height: s.badge - 2 }}
-            className="text-primary-foreground"
-            strokeWidth={3}
+        <span className="absolute -bottom-0.5 -right-0.5">
+          <VerifiedBadge
+            size={size === 'lg' ? 'md' : size === 'md' ? 'sm' : 'xs'}
           />
         </span>
       )}

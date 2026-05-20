@@ -14,7 +14,6 @@ import {
   Clock,
   CheckCircle2,
   Sparkles,
-  BadgeCheck,
   X,
   Copy,
   Send,
@@ -22,6 +21,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { VerifiedBadge } from '@/components/oppy/verified-badge'
 import {
   mockPosts,
   mockComments,
@@ -256,7 +256,7 @@ function CommentPanel() {
                         {comment.author.name}
                       </span>
                       {comment.author.verified && (
-                        <BadgeCheck className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
+                        <VerifiedBadge size="xs" />
                       )}
                       <span className="text-[11px] text-muted-foreground ml-auto">
                         {timeAgo(comment.timestamp)}
@@ -508,7 +508,7 @@ function FeedCard({ post }: { post: OppPost }) {
                 {post.author.name}
               </span>
               {post.author.verified && (
-                <BadgeCheck className="h-4 w-4 text-primary" strokeWidth={3} />
+                <VerifiedBadge size="sm" />
               )}
               <button
                 onClick={(e) => {
@@ -644,7 +644,7 @@ export default function HomeScreen() {
                 <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
               <h1 className="text-xl font-bold text-foreground drop-shadow-lg">
-                OPP<span className="text-[#D1F550]">Y</span>
+                O<span className="text-[#D1F550]">QUI</span>
               </h1>
             </div>
           </div>

@@ -1,25 +1,23 @@
 ---
 Task ID: 1
 Agent: Main Agent
-Task: Fix image upload button and add dark/light mode toggle
+Task: Update certification badge to TikTok-style blue/white badge
 
 Work Log:
-- Explored project structure: identified Next.js 16 + TypeScript project with shadcn/ui
-- Found AddScreen.tsx image upload was simulated with hardcoded Unsplash URL
-- Found no dark/light mode toggle existed in Settings panel
-- Created `/api/upload` route with POST (file upload) and GET (file serving) handlers
-- Updated AddScreen.tsx with real file input, FileReader preview, file validation (type/size), upload status, and remove image button
-- Added light theme CSS variables in globals.css `:root` section
-- Updated layout.tsx to enable system preference and remove forced dark class
-- Created ThemeToggle component using `useSyncExternalStore` to avoid hydration/lint issues
-- Added "Apparence" section to Settings panel with Sun/Moon toggle
-- Updated all screen components (HomeScreen, NewsScreen, MessagesScreen, AddScreen, ProfileScreen) to use theme-aware Tailwind classes
-- Updated all oppy components (search-overlay, notifications-panel, ad-overlay, etc.) with theme-aware classes
-- Added allowedDevOrigins config for cross-origin preview access
-- Fixed Caddyfile to use 127.0.0.1 instead of localhost (IPv6 resolution issue)
+- Analyzed all files using BadgeCheck/verification badge (6 files total)
+- Created new reusable `VerifiedBadge` component at `/src/components/oppy/verified-badge.tsx`
+  - TikTok-identical style: blue circle (#20D5EC) with white checkmark (Check icon, strokeWidth={3})
+  - Supports 4 sizes: xs, sm, md, lg
+- Updated `user-avatar.tsx`: replaced BadgeCheck with VerifiedBadge component
+- Updated `ProfileScreen.tsx`: replaced inline BadgeCheck with VerifiedBadge size="lg"
+- Updated `HomeScreen.tsx`: replaced 2 BadgeCheck usages (comment panel + feed card) with VerifiedBadge; also fixed "OPPY" → "OQUI" in header
+- Updated `MessagesScreen.tsx`: replaced 2 BadgeCheck usages (chat header + conversation list) with VerifiedBadge
+- Updated `opp-card.tsx`: replaced CheckCircle2 with VerifiedBadge
+- Removed all `BadgeCheck` imports from lucide-react where no longer needed
+- Verified lint passes clean
+- Verified app compiles and serves (HTTP 200)
 
 Stage Summary:
-- Image upload now uses real `<input type="file">` with FileReader preview + API upload
-- Dark/Light mode toggle added in Settings > Apparence section
-- All components updated to use CSS variables for theme support
-- Server running with auto-restart capability
+- All verification badges across the app now use TikTok-style blue (#20D5EC) circle with white checkmark
+- Created reusable `VerifiedBadge` component for consistent styling
+- Also fixed remaining "OPPY" reference in HomeScreen header to "OQUI"

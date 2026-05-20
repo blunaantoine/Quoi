@@ -14,7 +14,6 @@ import {
   ArrowLeft,
   Check,
   CheckCheck,
-  BadgeCheck,
   X,
   UserCircle,
   Shield,
@@ -33,6 +32,7 @@ import {
   type Conversation,
   type Message,
 } from '@/lib/mock-data'
+import { VerifiedBadge } from '@/components/oppy/verified-badge'
 import {
   getSocket,
   joinConversation,
@@ -283,7 +283,7 @@ function ChatView({
               <div className="flex items-center gap-1">
                 <h3 className="text-sm font-semibold text-foreground">{participant.name}</h3>
                 {participant.verified && (
-                  <BadgeCheck className="w-4 h-4 text-primary" />
+                  <VerifiedBadge size="sm" />
                 )}
               </div>
               <span className="text-xs text-muted-foreground">
@@ -722,7 +722,7 @@ export default function MessagesScreen() {
                     <span className="text-sm font-semibold text-foreground truncate flex items-center gap-1">
                       {p.name}
                       {p.verified && (
-                        <BadgeCheck className="w-4 h-4 text-primary shrink-0" />
+                        <VerifiedBadge size="sm" />
                       )}
                     </span>
                     <span className="text-xs text-muted-foreground shrink-0 ml-2">

@@ -17,6 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { CategoryBadge } from './category-badge';
 import { UserAvatar } from './user-avatar';
+import { VerifiedBadge } from './verified-badge';
 import type { OppPost } from '@/lib/mock-data';
 
 interface OppCardProps {
@@ -213,7 +214,7 @@ export function OppCard({ post, className }: OppCardProps) {
                 {post.author.name}
               </span>
               {post.author.verified && (
-                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <VerifiedBadge size="sm" />
               )}
             </div>
           </div>
