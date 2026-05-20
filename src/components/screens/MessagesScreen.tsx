@@ -35,6 +35,7 @@ import {
 import { VerifiedBadge } from '@/components/oppy/verified-badge'
 import {
   getSocket,
+  connectSocket,
   joinConversation,
   leaveConversation,
   sendMessage,
@@ -44,6 +45,7 @@ import {
   onPresenceUpdate,
   onTypingStart,
   onTypingStop,
+  isConnected,
   type ChatMessage,
   type PresenceUpdate,
   type TypingData,
@@ -103,69 +105,83 @@ function ChatView({
 
   // Initialize socket and join conversation
   useEffect(() => {
-    const socket = getSocket()
+    let offConnect: (() => void) | null = null
+    let offNewMessage: (() => void) | undefined
+    let offTypingStart: (() => void) | undefined
+    let offTypingStop: (() => void) | undefined
+    let offPresenceUpdate: (() => void) | undefined
 
-    // Join the conversation room
-    const joinRoom = () => {
-      if (socket.connected) {
-        joinConversation(conversation.id, currentUser.id, currentUser.name)
-      } else {
-        socket.on('connect', () => {
+    try {
+      const socket = connectSocket()
+
+      // Join the conversation room
+      const joinRoom = () => {
+        if (socket.connected) {
           joinConversation(conversation.id, currentUser.id, currentUser.name)
-        })
+        } else {
+          socket.on('connect', () => {
+            joinConversation(conversation.id, currentUser.id, currentUser.name)
+          })
+          offConnect = () => socket.off('connect')
+        }
       }
+      joinRoom()
+
+      // ── Listen for new messages ────────────────────────────────
+      offNewMessage = onNewMessage((msg: ChatMessage) => {
+        if (msg.conversationId === conversation.id) {
+          setMessages((prev) => {
+            // Avoid duplicates
+            if (prev.some((m) => m.id === msg.id)) return prev
+            return [
+              ...prev,
+              {
+                id: msg.id,
+                senderId: msg.senderId,
+                text: msg.text,
+                timestamp: msg.timestamp,
+              },
+            ]
+          })
+        }
+      })
+
+      // ── Listen for typing indicators ──────────────────────────
+      offTypingStart = onTypingStart((data: TypingData) => {
+        if (data.conversationId === conversation.id && data.userId !== currentUser.id) {
+          setIsTyping(true)
+          setTypingUserName(data.userName || '')
+        }
+      })
+
+      offTypingStop = onTypingStop((data: TypingData) => {
+        if (data.conversationId === conversation.id && data.userId !== currentUser.id) {
+          setIsTyping(false)
+          setTypingUserName('')
+        }
+      })
+
+      // ── Listen for presence updates ───────────────────────────
+      offPresenceUpdate = onPresenceUpdate((data: PresenceUpdate) => {
+        if (data.conversationId === conversation.id) {
+          const participantOnline = data.onlineUsers.includes(conversation.participant.id)
+          setIsParticipantOnline(participantOnline)
+        }
+      })
+    } catch {
+      // Chat service unavailable — continue with local/mock data
     }
-    joinRoom()
-
-    // ── Listen for new messages ────────────────────────────────
-    const offNewMessage = onNewMessage((msg: ChatMessage) => {
-      if (msg.conversationId === conversation.id) {
-        setMessages((prev) => {
-          // Avoid duplicates
-          if (prev.some((m) => m.id === msg.id)) return prev
-          return [
-            ...prev,
-            {
-              id: msg.id,
-              senderId: msg.senderId,
-              text: msg.text,
-              timestamp: msg.timestamp,
-            },
-          ]
-        })
-      }
-    })
-
-    // ── Listen for typing indicators ──────────────────────────
-    const offTypingStart = onTypingStart((data: TypingData) => {
-      if (data.conversationId === conversation.id && data.userId !== currentUser.id) {
-        setIsTyping(true)
-        setTypingUserName(data.userName || '')
-      }
-    })
-
-    const offTypingStop = onTypingStop((data: TypingData) => {
-      if (data.conversationId === conversation.id && data.userId !== currentUser.id) {
-        setIsTyping(false)
-        setTypingUserName('')
-      }
-    })
-
-    // ── Listen for presence updates ───────────────────────────
-    const offPresenceUpdate = onPresenceUpdate((data: PresenceUpdate) => {
-      if (data.conversationId === conversation.id) {
-        const participantOnline = data.onlineUsers.includes(conversation.participant.id)
-        setIsParticipantOnline(participantOnline)
-      }
-    })
 
     // ── Cleanup ───────────────────────────────────────────────
     return () => {
-      leaveConversation(conversation.id, currentUser.id)
-      offNewMessage()
-      offTypingStart()
-      offTypingStop()
-      offPresenceUpdate()
+      if (isConnected()) {
+        leaveConversation(conversation.id, currentUser.id)
+      }
+      offNewMessage?.()
+      offTypingStart?.()
+      offTypingStop?.()
+      offPresenceUpdate?.()
+      offConnect?.()
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }
@@ -567,14 +583,18 @@ export default function MessagesScreen() {
 
   // Listen for presence updates from socket on the main screen too
   useEffect(() => {
-    const socket = getSocket()
+    try {
+      connectSocket()
 
-    const offPresenceUpdate = onPresenceUpdate((data: PresenceUpdate) => {
-      setOnlineUserIds(new Set(data.onlineUsers))
-    })
+      const offPresenceUpdate = onPresenceUpdate((data: PresenceUpdate) => {
+        setOnlineUserIds(new Set(data.onlineUsers))
+      })
 
-    return () => {
-      offPresenceUpdate()
+      return () => {
+        offPresenceUpdate()
+      }
+    } catch {
+      // Chat service unavailable — use mock online data
     }
   }, [])
 

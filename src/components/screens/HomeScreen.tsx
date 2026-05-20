@@ -185,6 +185,7 @@ function CommentPanel() {
   const { showComments, setShowComments, selectedPostId } = useAppStore()
   const [commentText, setCommentText] = useState('')
   const [addedComments, setAddedComments] = useState<Comment[]>([])
+  const [likedComments, setLikedComments] = useState<Set<string>>(new Set())
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Derive comments from mock data + locally added comments
@@ -195,6 +196,30 @@ function CommentPanel() {
       ...addedComments.filter((c) => c.postId === selectedPostId),
     ]
   }, [selectedPostId, addedComments])
+
+  const handleLikeComment = useCallback((commentId: string, currentLikes: number) => {
+    setLikedComments((prev) => {
+      const next = new Set(prev)
+      if (next.has(commentId)) {
+        next.delete(commentId)
+        // Decrement likes on addedComments
+        setAddedComments((prev) =>
+          prev.map((c) => c.id === commentId ? { ...c, likes: Math.max(0, c.likes - 1) } : c)
+        )
+      } else {
+        next.add(commentId)
+        // Increment likes on addedComments (for new comments) or track for mock comments
+        setAddedComments((prev) => {
+          const exists = prev.find((c) => c.id === commentId)
+          if (exists) {
+            return prev.map((c) => c.id === commentId ? { ...c, likes: c.likes + 1 } : c)
+          }
+          return prev
+        })
+      }
+      return next
+    })
+  }, [])
 
   const handleSubmit = useCallback(() => {
     if (!commentText.trim() || !selectedPostId) return
@@ -265,9 +290,15 @@ function CommentPanel() {
                     <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
                       {comment.text}
                     </p>
-                    <button className="flex items-center gap-1 mt-1 text-muted-foreground hover:text-primary transition-colors">
+                    <button
+                      onClick={() => handleLikeComment(comment.id, comment.likes)}
+                      className={cn(
+                        'flex items-center gap-1 mt-1 transition-colors',
+                        likedComments.has(comment.id) ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                      )}
+                    >
                       <ThumbsUp className="w-3 h-3" />
-                      <span className="text-[11px]">{comment.likes}</span>
+                      <span className="text-[11px]">{comment.likes + (likedComments.has(comment.id) && !addedComments.find((c) => c.id === comment.id) ? 1 : 0)}</span>
                     </button>
                   </div>
                 </div>

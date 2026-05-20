@@ -40,35 +40,56 @@ export type SocketEventMap = {
 
 let socket: Socket | null = null
 
+// Debounce state for connection error logging
+let lastErrorLogTime = 0
+const ERROR_LOG_DEBOUNCE_MS = 5000
+
+function createSocket(): Socket {
+  const s = io('/?XTransformPort=3003', {
+    transports: ['websocket', 'polling'],
+    forceNew: false,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 5000,
+    autoConnect: false,
+  })
+
+  s.on('connect', () => {
+    console.log('[Socket] Connected:', s.id)
+  })
+
+  s.on('disconnect', (reason) => {
+    console.log('[Socket] Disconnected:', reason)
+  })
+
+  s.on('connect_error', (error) => {
+    const now = Date.now()
+    if (now - lastErrorLogTime >= ERROR_LOG_DEBOUNCE_MS) {
+      console.warn('[Socket] Connection error:', error.message)
+      lastErrorLogTime = now
+    }
+  })
+
+  return s
+}
+
+/** Get the socket instance without connecting. Creates it if needed but does NOT connect. */
 export function getSocket(): Socket {
   if (!socket) {
-    // IMPORTANT: Use XTransformPort query param, NOT port in URL
-    // Path must be '/' for Caddy to forward correctly
-    socket = io('/?XTransformPort=3003', {
-      transports: ['websocket', 'polling'],
-      forceNew: false,
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 10000,
-      autoConnect: true,
-    })
-
-    socket.on('connect', () => {
-      console.log('[Socket] Connected:', socket!.id)
-    })
-
-    socket.on('disconnect', (reason) => {
-      console.log('[Socket] Disconnected:', reason)
-    })
-
-    socket.on('connect_error', (error) => {
-      console.error('[Socket] Connection error:', error.message)
-    })
+    socket = createSocket()
   }
-
   return socket
+}
+
+/** Create (if needed) and connect the socket. Call this when the user opens a conversation. */
+export function connectSocket(): Socket {
+  const s = getSocket()
+  if (!s.connected) {
+    s.connect()
+  }
+  return s
 }
 
 // ─── Event Emitters ───────────────────────────────────────────────

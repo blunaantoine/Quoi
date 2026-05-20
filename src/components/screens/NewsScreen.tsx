@@ -10,11 +10,16 @@ import {
   ArrowRight,
   Search,
   X,
+  Heart,
+  Share2,
+  Bookmark,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UserAvatar } from '@/components/oppy/user-avatar'
 import { mockArticles, type Article, type EventStatus } from '@/lib/mock-data'
 import { useAppStore } from '@/lib/store'
+import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
 // ─── Status styles ────────────────────────────────────────────────
 
@@ -46,6 +51,8 @@ function formatDate(dateStr: string): string {
 
 function ArticleDetailModal({ article, onClose }: { article: Article; onClose: () => void }) {
   const s = statusStyles[article.status]
+  const [liked, setLiked] = useState(false)
+  const [bookmarked, setBookmarked] = useState(false)
 
   return (
     <>
@@ -138,6 +145,43 @@ function ArticleDetailModal({ article, onClose }: { article: Article; onClose: (
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Action bar */}
+          <div className="flex items-center justify-around p-3 border-t border-border">
+            <button
+              onClick={() => setLiked(!liked)}
+              className={cn(
+                'flex items-center gap-1.5 text-sm transition-colors',
+                liked ? 'text-red-400' : 'text-muted-foreground hover:text-red-400'
+              )}
+            >
+              <Heart className={cn('w-5 h-5', liked && 'fill-red-400')} />
+              <span>J&apos;aime</span>
+            </button>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href)
+                toast('Lien copié !')
+              }}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Share2 className="w-5 h-5" />
+              <span>Partager</span>
+            </button>
+            <button
+              onClick={() => {
+                setBookmarked(!bookmarked)
+                toast(bookmarked ? 'Retiré des favoris' : 'Ajouté aux favoris')
+              }}
+              className={cn(
+                'flex items-center gap-1.5 text-sm transition-colors',
+                bookmarked ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+              )}
+            >
+              <Bookmark className={cn('w-5 h-5', bookmarked && 'fill-primary')} />
+              <span>{bookmarked ? 'Sauvé' : 'Sauvegarder'}</span>
+            </button>
           </div>
         </div>
       </div>

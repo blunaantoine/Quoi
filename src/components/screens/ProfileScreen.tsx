@@ -89,15 +89,17 @@ function getDeadline(deadline: string) {
 // ─── Edit Profile Modal ─────────────────────────────────────────
 
 function EditProfileModal({ onClose }: { onClose: () => void }) {
-  const [name, setName] = useState(currentUser.name)
-  const [bio, setBio] = useState('Étudiante passionnée par les opportunités africaines 🌍 | Tech & Innovation | Dakar 🇸🇳')
-  const [location, setLocation] = useState('Dakar, Sénégal')
-  const [website, setWebsite] = useState('oqui.app/amina')
+  const { currentUser: storeUser, updateCurrentUser } = useAppStore()
+  const [name, setName] = useState(storeUser.name)
+  const [bio, setBio] = useState(storeUser.bio)
+  const [location, setLocation] = useState(storeUser.location)
+  const [website, setWebsite] = useState(storeUser.website ?? '')
 
   const handleSave = useCallback(() => {
+    updateCurrentUser({ name, bio, location, website })
     toast('Profil mis à jour !')
     onClose()
-  }, [onClose])
+  }, [name, bio, location, website, updateCurrentUser, onClose])
 
   return (
     <>
@@ -333,7 +335,6 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
             {/* Déconnexion */}
             <button
               onClick={() => {
-                onClose()
                 const { logout } = useAppStore.getState()
                 logout()
                 toast('Déconnexion réussie')
@@ -356,6 +357,7 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
   const [liked, setLiked] = useState(post.liked)
   const [saved, setSaved] = useState(post.saved)
   const [likeCount, setLikeCount] = useState(post.likes)
+  const { setShowComments, setSelectedPostId } = useAppStore()
   const deadline = getDeadline(post.deadline)
   const cat = getCategory(post.category)
   const CatIcon = cat.icon
@@ -449,7 +451,13 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
               <Heart className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : ''}`} />
               <span>{likeCount}</span>
             </button>
-            <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-sky-400 transition-colors">
+            <button
+              onClick={() => {
+                setSelectedPostId(post.id)
+                setShowComments(true)
+              }}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-sky-400 transition-colors"
+            >
               <MessageCircle className="w-5 h-5" />
               <span>{post.comments}</span>
             </button>
@@ -510,6 +518,7 @@ function PostGridCard({ post, onClick }: { post: OppPost; onClick: () => void })
 // ─── Main Screen ──────────────────────────────────────────────────
 
 export default function ProfileScreen() {
+  const { currentUser: storeUser } = useAppStore()
   const [activeTab, setActiveTab] = useState('publications')
   const [showEditProfile, setShowEditProfile] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -550,15 +559,15 @@ export default function ProfileScreen() {
         <div className="relative inline-block mb-3">
           <div className="h-24 w-24 rounded-full overflow-hidden ring-4 ring-background ring-offset-0">
             <Image
-              src={currentUser.avatar}
-              alt={currentUser.name}
+              src={storeUser.avatar}
+              alt={storeUser.name}
               width={96}
               height={96}
               className="h-full w-full object-cover"
               unoptimized
             />
           </div>
-          {currentUser.verified && (
+          {storeUser.verified && (
             <span className="absolute -bottom-1 -right-1">
               <VerifiedBadge size="lg" />
             </span>
@@ -567,10 +576,10 @@ export default function ProfileScreen() {
 
         {/* Name, username, bio */}
         <div className="mb-4">
-          <h1 className="text-xl font-bold text-foreground">{currentUser.name}</h1>
-          <p className="text-sm text-muted-foreground mb-2">@{currentUser.name.toLowerCase().replace(/\s/g, '_')}</p>
+          <h1 className="text-xl font-bold text-foreground">{storeUser.name}</h1>
+          <p className="text-sm text-muted-foreground mb-2">{storeUser.username}</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Étudiante passionnée par les opportunités africaines 🌍 | Tech & Innovation | Dakar 🇸🇳
+            {storeUser.bio}
           </p>
         </div>
 
@@ -578,12 +587,14 @@ export default function ProfileScreen() {
         <div className="flex items-center gap-3 mb-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 text-primary" />
-            Dakar, Sénégal
+            {storeUser.location}
           </span>
-          <span className="flex items-center gap-1">
-            <LinkIcon className="w-3.5 h-3.5 text-primary" />
-            <a href="#" className="text-primary hover:underline">oqui.app/amina</a>
-          </span>
+          {storeUser.website && (
+            <span className="flex items-center gap-1">
+              <LinkIcon className="w-3.5 h-3.5 text-primary" />
+              <a href="#" className="text-primary hover:underline">{storeUser.website}</a>
+            </span>
+          )}
         </div>
 
         {/* Stats Grid */}

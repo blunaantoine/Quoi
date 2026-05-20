@@ -10,6 +10,7 @@ export interface User {
   avatar: string
   bio: string
   location: string
+  website?: string
   followers: number
   following: number
   opportunities: number
@@ -107,6 +108,9 @@ interface AppState {
   // Chat menu dropdown
   showChatMenu: boolean
   setShowChatMenu: (show: boolean) => void
+
+  // Update current user
+  updateCurrentUser: (updates: Partial<User>) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -256,4 +260,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Chat menu
   showChatMenu: false,
   setShowChatMenu: (show) => set({ showChatMenu: show }),
+
+  // Update current user
+  updateCurrentUser: (updates) => set((state) => ({ currentUser: { ...state.currentUser, ...updates } })),
 }))
