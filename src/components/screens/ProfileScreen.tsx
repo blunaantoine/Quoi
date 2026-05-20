@@ -615,7 +615,7 @@ export default function ProfileScreen() {
             className="flex-1 border-border text-foreground hover:bg-secondary hover:border-primary/30 rounded-xl h-10 text-sm gap-1.5"
             onClick={() => {
               navigator.clipboard.writeText(window.location.href)
-              toast('Lien de profil copié ! 🔗')
+              toast('Lien de profil copié')
             }}
           >
             <Share2 className="w-4 h-4" />

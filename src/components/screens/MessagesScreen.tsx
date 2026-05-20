@@ -300,7 +300,7 @@ function ChatView({
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-secondary"
-              onClick={() => toast('Appel vocal bientôt disponible 📞')}
+              onClick={() => toast('Appel vocal bientôt disponible')}
             >
               <Phone className="w-4 h-4" />
             </Button>
@@ -308,7 +308,7 @@ function ChatView({
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-secondary"
-              onClick={() => toast('Appel vidéo bientôt disponible 📹')}
+              onClick={() => toast('Appel vidéo bientôt disponible')}
             >
               <Video className="w-4 h-4" />
             </Button>

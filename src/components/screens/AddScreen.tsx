@@ -138,7 +138,7 @@ export default function AddScreen() {
       // In production, this would call a POST /api/posts endpoint
       await new Promise((resolve) => setTimeout(resolve, 800))
 
-      toast('Opportunité publiée avec succès ! 🎉')
+      toast('Opportunité publiée avec succès')
 
       // Reset form
       setTitle('')

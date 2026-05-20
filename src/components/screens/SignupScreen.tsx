@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import {
   ArrowLeft,
   Eye,
@@ -12,11 +12,72 @@ import {
   UserPlus,
   Loader2,
   Check,
+  ShieldCheck,
+  Copy,
+  RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppStore } from '@/lib/store'
 import { toast } from 'sonner'
+
+// ─── OTP Input Component ─────────────────────────────────────────────
+
+function OtpInput({ length = 6, onComplete }: { length?: number; onComplete: (code: string) => void }) {
+  const [values, setValues] = useState<string[]>(Array(length).fill(''))
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  const handleChange = useCallback((index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return
+    const newValues = [...values]
+    newValues[index] = value.slice(-1)
+    setValues(newValues)
+    if (value && index < length - 1) {
+      inputRefs.current[index + 1]?.focus()
+    }
+    if (newValues.every((v) => v !== '')) {
+      onComplete(newValues.join(''))
+    }
+  }, [values, length, onComplete])
+
+  const handleKeyDown = useCallback((index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !values[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus()
+    }
+  }, [values])
+
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
+    if (paste.length === length) {
+      const newValues = paste.split('')
+      setValues(newValues)
+      onComplete(paste)
+      inputRefs.current[length - 1]?.focus()
+    }
+  }, [length, onComplete])
+
+  return (
+    <div className="flex gap-2 justify-center" onPaste={handlePaste}>
+      {Array.from({ length }).map((_, i) => (
+        <input
+          key={i}
+          ref={(el) => { inputRefs.current[i] = el }}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={values[i]}
+          onChange={(e) => handleChange(i, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          className="w-11 h-13 rounded-xl bg-card border border-border text-center text-lg font-bold text-foreground focus:border-primary/60 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+          autoFocus={i === 0}
+        />
+      ))}
+    </div>
+  )
+}
+
+// ─── Main Signup Screen ─────────────────────────────────────────────
 
 export default function SignupScreen() {
   const { setAuthView, setLoggedIn } = useAppStore()
@@ -28,6 +89,12 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
+
+  // Email verification OTP state
+  const [showOtpVerification, setShowOtpVerification] = useState(false)
+  const [simulatedCode, setSimulatedCode] = useState<string | null>(null)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [countdown, setCountdown] = useState(0)
 
   // Password strength
   const getPasswordStrength = () => {
@@ -47,8 +114,22 @@ export default function SignupScreen() {
 
   const strength = getPasswordStrength()
 
+  // Countdown timer for OTP resend
+  const startCountdown = useCallback(() => {
+    setCountdown(60)
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }, [])
+
+  // Step 1: Register account, then send email verification OTP
   const handleSignup = async () => {
-    // Validation
     if (!displayName.trim() || !username.trim() || !email.trim() || !password.trim()) {
       toast('Veuillez remplir tous les champs')
       return
@@ -86,6 +167,7 @@ export default function SignupScreen() {
 
     setIsLoading(true)
     try {
+      // Step 1: Create the account
       const response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -102,20 +184,200 @@ export default function SignupScreen() {
 
       if (!response.ok) {
         toast(data.error || 'Erreur lors de l\'inscription')
+        setIsLoading(false)
         return
       }
 
-      toast('Compte créé avec succès ! 🎉')
-      setLoggedIn(true)
+      // Step 2: Send email verification OTP
+      await sendVerificationOtp()
     } catch {
-      // If API fails, allow demo signup
-      toast('Compte démo créé ! 🚀')
-      setLoggedIn(true)
+      // If API fails, still try OTP
+      await sendVerificationOtp()
+    }
+  }
+
+  // Send email verification OTP
+  const sendVerificationOtp = async () => {
+    try {
+      const otpResponse = await fetch('/api/v1/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send', email }),
+      })
+      const otpData = await otpResponse.json()
+
+      if (!otpResponse.ok) {
+        toast(otpData.error || 'Erreur lors de l\'envoi du code')
+        setIsLoading(false)
+        return
+      }
+
+      if (otpData.plain_code) {
+        setSimulatedCode(otpData.plain_code)
+      } else {
+        setSimulatedCode(null)
+        toast('Code de vérification envoyé à votre adresse email')
+      }
+
+      setShowOtpVerification(true)
+      startCountdown()
+    } catch {
+      toast('Erreur de connexion')
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Verify email OTP
+  const handleVerifyOtp = async (code: string) => {
+    setIsVerifying(true)
+    try {
+      const response = await fetch('/api/v1/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', email, code }),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        toast(data.error || 'Code invalide')
+        return
+      }
+
+      toast('Email vérifié avec succès')
+      setLoggedIn(true)
+    } catch {
+      toast('Erreur de vérification')
+    } finally {
+      setIsVerifying(false)
+    }
+  }
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    if (countdown > 0) return
+    try {
+      const response = await fetch('/api/v1/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send', email }),
+      })
+      const data = await response.json()
+
+      if (data.plain_code) {
+        setSimulatedCode(data.plain_code)
+      } else {
+        setSimulatedCode(null)
+        toast('Nouveau code envoyé')
+      }
+
+      startCountdown()
+    } catch {
+      toast('Erreur de renvoi')
+    }
+  }
+
+  // ─── OTP Verification Step ──────────────────────────────────────
+  if (showOtpVerification) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header */}
+        <div className="px-4 pt-4 pb-2">
+          <button
+            onClick={() => {
+              setShowOtpVerification(false)
+              setSimulatedCode(null)
+            }}
+            className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 px-6 py-8">
+          <div className="mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+              <ShieldCheck className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="text-3xl font-extrabold text-foreground mb-2">
+              Vérification email
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Entrez le code à 6 chiffres envoyé à <span className="text-foreground font-medium">{email}</span>
+            </p>
+          </div>
+
+          {/* Simulation mode: show code */}
+          {simulatedCode && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6 space-y-2">
+              <p className="text-xs text-amber-400 font-medium text-center">
+                Mode simulation — Code OTP
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-3xl font-bold text-amber-300 tracking-[0.3em] font-mono">
+                  {simulatedCode}
+                </span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(simulatedCode)
+                    toast('Code copié')
+                  }}
+                  className="h-9 w-9 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 hover:bg-amber-500/30 transition-colors"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* OTP Input */}
+          <div className="mb-6">
+            <OtpInput onComplete={handleVerifyOtp} />
+          </div>
+
+          {isVerifying && (
+            <div className="flex justify-center py-3">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          )}
+
+          {/* Resend */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleResendOtp}
+              disabled={countdown > 0 || isVerifying}
+              className="text-sm text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              {countdown > 0 ? `Renvoyer le code dans ${countdown}s` : 'Renvoyer le code'}
+            </button>
+          </div>
+
+          {/* Separator */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground font-medium">ou</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+
+          {/* Skip verification (demo) */}
+          <Button
+            onClick={() => {
+              toast('Connexion démo activée')
+              setLoggedIn(true)
+            }}
+            variant="outline"
+            className="w-full border-border text-foreground hover:bg-secondary hover:border-primary/30 font-semibold rounded-2xl h-11 text-sm"
+          >
+            Passer en mode démo
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // ─── Signup Form ──────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -133,7 +395,7 @@ export default function SignupScreen() {
         {/* Title */}
         <div className="mb-6">
           <h1 className="text-3xl font-extrabold text-foreground mb-2">
-            Rejoignez-nous ! 🚀
+            Rejoignez-nous
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Créez votre compte et accédez à des milliers d&apos;opportunités

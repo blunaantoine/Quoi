@@ -254,3 +254,15 @@ model AdminLog {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model OtpCode {
+  id         String   @id @default(cuid())
+  email      String
+  codeHash   String   // SHA-256 hash of the OTP code
+  purpose    String   // "login", "email_verification", "password_reset"
+  expiresAt  DateTime
+  isUsed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([email, purpose, isUsed])
+}
