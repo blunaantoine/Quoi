@@ -16,9 +16,16 @@ import {
   CheckCheck,
   BadgeCheck,
   X,
+  UserCircle,
+  Shield,
+  Flag,
+  Camera,
+  FileText,
+  MapPin,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 import {
   mockConversations,
   mockUsers,
@@ -67,6 +74,10 @@ function formatMessageTime(iso: string): string {
   })
 }
 
+// ─── Emoji picker data ────────────────────────────────────────────
+
+const EMOJI_LIST = ['😀', '❤️', '🔥', '👍', '🎉', '💯', '✨', '🚀', '💪', '🙌', '😂', '🥳']
+
 // ─── Chat View ────────────────────────────────────────────────────
 
 function ChatView({
@@ -81,10 +92,14 @@ function ChatView({
   const [isTyping, setIsTyping] = useState(false)
   const [typingUserName, setTypingUserName] = useState('')
   const [isParticipantOnline, setIsParticipantOnline] = useState(conversation.participant.online ?? false)
+  const [showChatMenu, setShowChatMenu] = useState(false)
+  const [showAttachSheet, setShowAttachSheet] = useState(false)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isTypingRef = useRef(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   // Initialize socket and join conversation
   useEffect(() => {
@@ -164,9 +179,23 @@ function ChatView({
     }
   }, [messages, isTyping])
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowChatMenu(false)
+      }
+    }
+    if (showChatMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showChatMenu])
+
   // ── Typing indicator logic ──────────────────────────────────
   const handleInputChange = useCallback((value: string) => {
     setMessage(value)
+    setShowEmojiPicker(false)
 
     // Emit typing start if not already typing
     if (!isTypingRef.current && value.trim()) {
@@ -215,6 +244,12 @@ function ChatView({
     inputRef.current?.focus()
   }, [message, conversation.id])
 
+  const handleEmojiSelect = useCallback((emoji: string) => {
+    setMessage((prev) => prev + emoji)
+    setShowEmojiPicker(false)
+    inputRef.current?.focus()
+  }, [])
+
   const participant = conversation.participant
 
   return (
@@ -260,16 +295,75 @@ function ChatView({
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]">
+          <div className="flex items-center gap-1 relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]"
+              onClick={() => toast('Appel vocal bientôt disponible 📞')}
+            >
               <Phone className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]"
+              onClick={() => toast('Appel vidéo bientôt disponible 📹')}
+            >
               <Video className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-[#A3A3A3] hover:text-white hover:bg-[#262626]"
+              onClick={() => setShowChatMenu(!showChatMenu)}
+            >
               <MoreVertical className="w-4 h-4" />
             </Button>
+
+            {/* Chat Menu Dropdown */}
+            {showChatMenu && (
+              <div
+                ref={menuRef}
+                className="absolute right-0 top-full mt-1 w-48 bg-[#1A1A1A] border border-[#333333] rounded-xl shadow-2xl z-50 animate-fade-slide-in overflow-hidden"
+              >
+                <button
+                  onClick={() => {
+                    toast('Profil bientôt disponible')
+                    setShowChatMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white hover:bg-[#262626] transition-colors"
+                >
+                  <UserCircle className="w-4 h-4 text-[#A3A3A3]" />
+                  Voir le profil
+                </button>
+                <button
+                  onClick={() => {
+                    toast(`Bloquer ${participant.name} ?`, {
+                      action: {
+                        label: 'Bloquer',
+                        onClick: () => toast('Utilisateur bloqué'),
+                      },
+                    })
+                    setShowChatMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-red-400 hover:bg-[#262626] transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  Bloquer
+                </button>
+                <button
+                  onClick={() => {
+                    toast('Signalement envoyé')
+                    setShowChatMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-red-400 hover:bg-[#262626] transition-colors"
+                >
+                  <Flag className="w-4 h-4" />
+                  Signaler
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -343,13 +437,87 @@ function ChatView({
         )}
       </div>
 
+      {/* Emoji Picker */}
+      {showEmojiPicker && (
+        <div className="bg-[#1A1A1A] border-t border-[#333333] p-3 animate-fade-slide-in">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {EMOJI_LIST.map((emoji) => (
+              <button
+                key={emoji}
+                onClick={() => handleEmojiSelect(emoji)}
+                className="h-10 w-10 flex items-center justify-center text-xl hover:bg-[#262626] rounded-lg transition-colors active:scale-90"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Attach Sheet */}
+      {showAttachSheet && (
+        <>
+          <div
+            className="fixed inset-0 z-[55] bg-black/40"
+            onClick={() => setShowAttachSheet(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 z-[56] bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl p-4 animate-slide-up">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-white">Joindre</h4>
+              <button
+                onClick={() => setShowAttachSheet(false)}
+                className="h-6 w-6 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3]"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                onClick={() => {
+                  toast('Envoi de photo bientôt disponible')
+                  setShowAttachSheet(false)
+                }}
+                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0A0A] border border-[#333333] hover:border-[#D1F550]/30 transition-colors"
+              >
+                <Camera className="w-6 h-6 text-[#D1F550]" />
+                <span className="text-xs text-[#A3A3A3]">Photo</span>
+              </button>
+              <button
+                onClick={() => {
+                  toast('Envoi de document bientôt disponible')
+                  setShowAttachSheet(false)
+                }}
+                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0A0A] border border-[#333333] hover:border-[#D1F550]/30 transition-colors"
+              >
+                <FileText className="w-6 h-6 text-[#D1F550]" />
+                <span className="text-xs text-[#A3A3A3]">Document</span>
+              </button>
+              <button
+                onClick={() => {
+                  toast('Partage de localisation bientôt disponible')
+                  setShowAttachSheet(false)
+                }}
+                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0A0A] border border-[#333333] hover:border-[#D1F550]/30 transition-colors"
+              >
+                <MapPin className="w-6 h-6 text-[#D1F550]" />
+                <span className="text-xs text-[#A3A3A3]">Localisation</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Input Bar */}
-      <div className="sticky bottom-0 bg-[#0A0A0A] border-t border-[#333333] px-4 py-3 pb-4">
+      <div className="sticky bottom-0 bg-[#0A0A0A] border-t border-[#333333] px-4 py-3 pb-4 z-30">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
             className="h-9 w-9 text-[#A3A3A3] hover:text-white hover:bg-[#262626] shrink-0"
+            onClick={() => {
+              setShowAttachSheet(!showAttachSheet)
+              setShowEmojiPicker(false)
+            }}
           >
             <Paperclip className="w-5 h-5" />
           </Button>
@@ -366,6 +534,10 @@ function ChatView({
               variant="ghost"
               size="icon"
               className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-[#A3A3A3] hover:text-white"
+              onClick={() => {
+                setShowEmojiPicker(!showEmojiPicker)
+                setShowAttachSheet(false)
+              }}
             >
               <Smile className="w-4 h-4" />
             </Button>

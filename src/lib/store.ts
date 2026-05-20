@@ -69,6 +69,36 @@ interface AppState {
   // Feed category filter
   feedCategory: string
   setFeedCategory: (cat: string) => void
+
+  // Comment panel
+  showComments: boolean
+  setShowComments: (show: boolean) => void
+  selectedPostId: string | null
+  setSelectedPostId: (id: string | null) => void
+
+  // Share sheet
+  showShareSheet: boolean
+  setShowShareSheet: (show: boolean) => void
+
+  // Edit profile
+  showEditProfile: boolean
+  setShowEditProfile: (show: boolean) => void
+
+  // Settings
+  showSettings: boolean
+  setShowSettings: (show: boolean) => void
+
+  // Article detail
+  showArticleDetail: string | null
+  setShowArticleDetail: (id: string | null) => void
+
+  // Post detail (profile grid cards)
+  showPostDetail: string | null
+  setShowPostDetail: (id: string | null) => void
+
+  // Chat menu dropdown
+  showChatMenu: boolean
+  setShowChatMenu: (show: boolean) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -181,4 +211,34 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Feed category filter
   feedCategory: 'all',
   setFeedCategory: (cat) => set({ feedCategory: cat }),
+
+  // Comment panel
+  showComments: false,
+  setShowComments: (show) => set({ showComments: show }),
+  selectedPostId: null,
+  setSelectedPostId: (id) => set({ selectedPostId: id }),
+
+  // Share sheet
+  showShareSheet: false,
+  setShowShareSheet: (show) => set({ showShareSheet: show }),
+
+  // Edit profile
+  showEditProfile: false,
+  setShowEditProfile: (show) => set({ showEditProfile: show }),
+
+  // Settings
+  showSettings: false,
+  setShowSettings: (show) => set({ showSettings: show }),
+
+  // Article detail
+  showArticleDetail: null,
+  setShowArticleDetail: (id) => set({ showArticleDetail: id }),
+
+  // Post detail
+  showPostDetail: null,
+  setShowPostDetail: (id) => set({ showPostDetail: id }),
+
+  // Chat menu
+  showChatMenu: false,
+  setShowChatMenu: (show) => set({ showChatMenu: show }),
 }))

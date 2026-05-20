@@ -15,15 +15,24 @@ import {
   CheckCircle2,
   Sparkles,
   BadgeCheck,
+  X,
+  Copy,
+  Send,
+  ThumbsUp,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import {
   mockPosts,
+  mockComments,
   categories,
   getCategory,
+  currentUser as currentOppUser,
   type OppPost,
   type CategorySlug,
+  type Comment,
 } from '@/lib/mock-data'
+import { useAppStore } from '@/lib/store'
 
 // ─── Deadline countdown hook ────────────────────────────────────
 
@@ -65,15 +74,259 @@ function formatCount(n: number): string {
   return String(n)
 }
 
+// ─── Time ago helper for comments ───────────────────────────────
+
+function timeAgo(timestamp: string): string {
+  const diff = Date.now() - new Date(timestamp).getTime()
+  const mins = Math.floor(diff / 60_000)
+  if (mins < 1) return "À l'instant"
+  if (mins < 60) return `Il y a ${mins}min`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `Il y a ${hours}h`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `Il y a ${days}j`
+  return new Date(timestamp).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
+
+// ─── Share Sheet Component ───────────────────────────────────────
+
+function ShareSheet() {
+  const { showShareSheet, setShowShareSheet } = useAppStore()
+
+  const shareOptions = [
+    {
+      icon: Copy,
+      label: 'Copier le lien',
+      action: () => {
+        navigator.clipboard.writeText(window.location.href)
+        toast('Lien copié !')
+        setShowShareSheet(false)
+      },
+    },
+    {
+      icon: Share2,
+      label: 'Partager sur WhatsApp',
+      action: () => {
+        window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`, '_blank')
+        setShowShareSheet(false)
+      },
+    },
+    {
+      icon: Share2,
+      label: 'Partager sur Twitter/X',
+      action: () => {
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`, '_blank')
+        setShowShareSheet(false)
+      },
+    },
+    {
+      icon: Share2,
+      label: 'Partager sur Facebook',
+      action: () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')
+        setShowShareSheet(false)
+      },
+    },
+    {
+      icon: Send,
+      label: 'Partager par email',
+      action: () => {
+        window.open(`mailto:?subject=${encodeURIComponent('Découvrez cette opportunité sur OPPY')}&body=${encodeURIComponent(window.location.href)}`)
+        setShowShareSheet(false)
+      },
+    },
+  ]
+
+  if (!showShareSheet) return null
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={() => setShowShareSheet(false)}
+      />
+      <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
+        <div className="mx-auto max-w-lg bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl p-5 pb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-bold text-white">Partager</h3>
+            <button
+              onClick={() => setShowShareSheet(false)}
+              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-1">
+            {shareOptions.map((option) => {
+              const Icon = option.icon
+              return (
+                <button
+                  key={option.label}
+                  onClick={option.action}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors text-left"
+                >
+                  <div className="h-10 w-10 rounded-full bg-[#0A0A0A] border border-[#333333] flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-[#D1F550]" />
+                  </div>
+                  <span className="text-sm font-medium text-white">{option.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ─── Comment Panel Component ─────────────────────────────────────
+
+function CommentPanel() {
+  const { showComments, setShowComments, selectedPostId } = useAppStore()
+  const [commentText, setCommentText] = useState('')
+  const [addedComments, setAddedComments] = useState<Comment[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Derive comments from mock data + locally added comments
+  const comments = useMemo(() => {
+    if (!selectedPostId) return []
+    return [
+      ...mockComments.filter((c) => c.postId === selectedPostId),
+      ...addedComments.filter((c) => c.postId === selectedPostId),
+    ]
+  }, [selectedPostId, addedComments])
+
+  const handleSubmit = useCallback(() => {
+    if (!commentText.trim() || !selectedPostId) return
+    const newComment: Comment = {
+      id: `cm_new_${Date.now()}`,
+      postId: selectedPostId,
+      author: currentOppUser,
+      text: commentText.trim(),
+      timestamp: new Date().toISOString(),
+      likes: 0,
+    }
+    setAddedComments((prev) => [...prev, newComment])
+    setCommentText('')
+    toast('Commentaire ajouté !')
+    inputRef.current?.focus()
+  }, [commentText, selectedPostId])
+
+  if (!showComments || !selectedPostId) return null
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={() => setShowComments(false)}
+      />
+      <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
+        <div className="mx-auto max-w-lg bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl flex flex-col max-h-[70vh]">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-[#333333]">
+            <h3 className="text-base font-bold text-white">
+              Commentaires ({comments.length})
+            </h3>
+            <button
+              onClick={() => setShowComments(false)}
+              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Comments list */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment.id} className="flex gap-3 animate-fade-slide-in">
+                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-[#333333]">
+                    <Image
+                      src={comment.author.avatar}
+                      alt={comment.author.name}
+                      width={32}
+                      height={32}
+                      className="h-full w-full object-cover"
+                      unoptimized
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-semibold text-white">
+                        {comment.author.name}
+                      </span>
+                      {comment.author.verified && (
+                        <BadgeCheck className="w-3.5 h-3.5 text-[#D1F550]" strokeWidth={3} />
+                      )}
+                      <span className="text-[11px] text-[#A3A3A3] ml-auto">
+                        {timeAgo(comment.timestamp)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#A3A3A3] leading-relaxed mt-0.5">
+                      {comment.text}
+                    </p>
+                    <button className="flex items-center gap-1 mt-1 text-[#A3A3A3] hover:text-[#D1F550] transition-colors">
+                      <ThumbsUp className="w-3 h-3" />
+                      <span className="text-[11px]">{comment.likes}</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <MessageCircle className="w-8 h-8 text-[#333333] mx-auto mb-2" />
+                <p className="text-sm text-[#A3A3A3]">Aucun commentaire pour le moment</p>
+                <p className="text-xs text-[#A3A3A3]/70 mt-1">Soyez le premier à commenter !</p>
+              </div>
+            )}
+          </div>
+
+          {/* Comment input */}
+          <div className="p-3 border-t border-[#333333] flex items-center gap-2">
+            <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-[#333333]">
+              <Image
+                src={currentOppUser.avatar}
+                alt={currentOppUser.name}
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+            </div>
+            <input
+              ref={inputRef}
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder="Écrire un commentaire..."
+              className="flex-1 bg-[#0A0A0A] border border-[#333333] rounded-full px-4 py-2 text-sm text-white placeholder:text-[#A3A3A3] focus:outline-none focus:border-[#D1F550]/50 transition-colors"
+            />
+            <button
+              onClick={handleSubmit}
+              disabled={!commentText.trim()}
+              className="h-8 w-8 rounded-full bg-[#D1F550] flex items-center justify-center text-[#0A0A0A] disabled:opacity-40 disabled:cursor-not-allowed shrink-0 hover:bg-[#c5e840] transition-colors"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 // ─── FeedCard Component ─────────────────────────────────────────
 
 function FeedCard({ post }: { post: OppPost }) {
   const [liked, setLiked] = useState(post.liked)
   const [saved, setSaved] = useState(post.saved)
   const [likeCount, setLikeCount] = useState(post.likes)
+  const [commentCount, setCommentCount] = useState(post.comments)
   const [following, setFollowing] = useState(false)
   const [showHeart, setShowHeart] = useState(false)
   const lastTapRef = useRef(0)
+  const { setShowComments, setSelectedPostId, setShowShareSheet } = useAppStore()
 
   const deadline = getDeadline(post.deadline)
   const cat = getCategory(post.category)
@@ -108,6 +361,17 @@ function FeedCard({ post }: { post: OppPost }) {
     e.stopPropagation()
     setSaved((prev) => !prev)
   }, [])
+
+  const handleComment = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setSelectedPostId(post.id)
+    setShowComments(true)
+  }, [post.id, setSelectedPostId, setShowComments])
+
+  const handleShare = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setShowShareSheet(true)
+  }, [setShowShareSheet])
 
   return (
     <div
@@ -149,7 +413,7 @@ function FeedCard({ post }: { post: OppPost }) {
         })}
       </div>
 
-      {/* ── Double-tap heart animation (CSS instead of framer-motion) ── */}
+      {/* ── Double-tap heart animation ── */}
       {showHeart && (
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center animate-heart-pop">
           <Heart className="h-24 w-24 text-red-500 fill-red-500 drop-shadow-lg" />
@@ -286,20 +550,20 @@ function FeedCard({ post }: { post: OppPost }) {
             {/* Comment */}
             <button
               type="button"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleComment}
               className="flex flex-col items-center gap-0.5"
               aria-label="Commenter"
             >
               <MessageCircle className="h-7 w-7 text-white drop-shadow-lg" />
               <span className="text-[11px] font-semibold text-white drop-shadow">
-                {formatCount(post.comments)}
+                {formatCount(commentCount)}
               </span>
             </button>
 
             {/* Share */}
             <button
               type="button"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleShare}
               className="flex flex-col items-center gap-0.5"
               aria-label="Partager"
             >
@@ -508,6 +772,10 @@ export default function HomeScreen() {
           </div>
         )}
       </div>
+
+      {/* ── Overlays ── */}
+      <CommentPanel />
+      <ShareSheet />
     </div>
   )
 }

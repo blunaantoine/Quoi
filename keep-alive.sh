@@ -1,8 +1,11 @@
 #!/bin/bash
-# Keep-alive script for OPPY production server
 cd /home/z/my-project
+COUNT=0
 while true; do
-  NODE_OPTIONS="--max-old-space-size=512" npx next start -p 3000 2>&1 | tee -a /home/z/my-project/dev.log
-  echo "$(date): Server crashed, restarting in 3s..." >> /home/z/my-project/dev.log
-  sleep 3
+  COUNT=$((COUNT + 1))
+  echo "$(date): Starting server (attempt $COUNT)..." >> /home/z/my-project/server-restart.log
+  NODE_OPTIONS="--max-old-space-size=1024" node node_modules/.bin/next start -p 3000
+  EXIT_CODE=$?
+  echo "$(date): Server exited with code $EXIT_CODE, restarting in 2s..." >> /home/z/my-project/server-restart.log
+  sleep 2
 done

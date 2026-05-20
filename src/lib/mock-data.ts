@@ -720,6 +720,132 @@ export const mockAds: Ad[] = [
   },
 ];
 
+// ─── Mock Comments ─────────────────────────────────────────────────
+
+export interface Comment {
+  id: string;
+  postId: string;
+  author: OppUser;
+  text: string;
+  timestamp: string;
+  likes: number;
+}
+
+export const mockComments: Comment[] = [
+  {
+    id: "cm1",
+    postId: "p1",
+    author: mockUsers[2],
+    text: "Super opportunité ! Je vais postuler immédiatement 🎯",
+    timestamp: "2026-05-19T18:00:00Z",
+    likes: 12,
+  },
+  {
+    id: "cm2",
+    postId: "p1",
+    author: mockUsers[4],
+    text: "J'ai participé l'année dernière, c'est une excellente expérience !",
+    timestamp: "2026-05-19T16:30:00Z",
+    likes: 8,
+  },
+  {
+    id: "cm3",
+    postId: "p1",
+    author: mockUsers[5],
+    text: "Les bourses de participation sont une belle initiative 👏",
+    timestamp: "2026-05-19T14:00:00Z",
+    likes: 5,
+  },
+  {
+    id: "cm4",
+    postId: "p2",
+    author: mockUsers[1],
+    text: "Bourse très intéressante ! Qui d'autre prépare son dossier ?",
+    timestamp: "2026-05-19T17:00:00Z",
+    likes: 23,
+  },
+  {
+    id: "cm5",
+    postId: "p2",
+    author: mockUsers[6],
+    text: "1 500 CAD par mois, c'est correct pour Montréal. Allez-y !",
+    timestamp: "2026-05-19T12:00:00Z",
+    likes: 15,
+  },
+  {
+    id: "cm6",
+    postId: "p3",
+    author: mockUsers[3],
+    text: "Formation très complète, je recommande vivement ! 💡",
+    timestamp: "2026-05-18T20:00:00Z",
+    likes: 31,
+  },
+  {
+    id: "cm7",
+    postId: "p3",
+    author: mockUsers[2],
+    text: "Aucun prérequis technique ? C'est parfait pour les débutants",
+    timestamp: "2026-05-18T15:00:00Z",
+    likes: 9,
+  },
+  {
+    id: "cm8",
+    postId: "p4",
+    author: mockUsers[5],
+    text: "Orange Sonatel est une excellente entreprise pour un stage 👍",
+    timestamp: "2026-05-17T10:00:00Z",
+    likes: 18,
+  },
+  {
+    id: "cm9",
+    postId: "p5",
+    author: mockUsers[4],
+    text: "Wave change la donne en Afrique, belle opportunité !",
+    timestamp: "2026-05-16T14:00:00Z",
+    likes: 7,
+  },
+  {
+    id: "cm10",
+    postId: "p6",
+    author: mockUsers[1],
+    text: "J'y serai ! Qui veut faire le déplacement ensemble ? 🚌",
+    timestamp: "2026-05-18T16:00:00Z",
+    likes: 42,
+  },
+  {
+    id: "cm11",
+    postId: "p6",
+    author: mockUsers[6],
+    text: "5000 participants, ça promet d'être immense !",
+    timestamp: "2026-05-17T09:00:00Z",
+    likes: 19,
+  },
+  {
+    id: "cm12",
+    postId: "p7",
+    author: mockUsers[3],
+    text: "50 000 USD par projet ! C'est le moment de se lancer 🚀",
+    timestamp: "2026-05-18T11:00:00Z",
+    likes: 56,
+  },
+  {
+    id: "cm13",
+    postId: "p8",
+    author: mockUsers[2],
+    text: "L'IA en Afrique, un sujet crucial. Merci UNESCO !",
+    timestamp: "2026-05-16T08:00:00Z",
+    likes: 11,
+  },
+  {
+    id: "cm14",
+    postId: "p9",
+    author: mockUsers[4],
+    text: "48h pour changer le monde, on relève le défi ? 💪",
+    timestamp: "2026-05-19T09:00:00Z",
+    likes: 28,
+  },
+];
+
 // ─── Helper ───────────────────────────────────────────────────────
 
 export function getCategory(slug: CategorySlug): Category {

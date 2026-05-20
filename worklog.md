@@ -164,3 +164,44 @@ Stage Summary:
 - Export renamed from Home to OppyHome to avoid lucide-react icon naming conflict
 - Lint passes with 0 errors
 - Dev server running correctly on port 3000
+
+---
+Task ID: 2-6
+Agent: Sub-agent (full-stack-developer)
+Task: Make ALL static buttons functional across the application
+
+Work Log:
+- Updated Zustand store (store.ts): Added new state fields: showComments, setShowComments, selectedPostId, setSelectedPostId, showShareSheet, setShowShareSheet, showEditProfile, setShowEditProfile, showSettings, setShowSettings, showArticleDetail, setShowArticleDetail, showPostDetail, setShowPostDetail, showChatMenu, setShowChatMenu
+- Updated mock-data.ts: Added Comment interface and mockComments array with 14 comments across all posts
+- Updated HomeScreen.tsx:
+  * Comment button: Opens inline comment panel (bottom sheet) showing scrollable list of mock comments with avatar, name, text, timestamp, like count. Input field at bottom to type new comment, submits on Enter, adds comment with toast "Commentaire ajouté !"
+  * Share button: Opens share sheet (bottom sheet) with 5 options: Copier le lien (clipboard + toast "Lien copié !"), Partager sur WhatsApp (wa.me link), Partager sur Twitter/X (twitter intent), Partager sur Facebook (facebook sharer), Partager par email (mailto link). Each option has icon + label.
+  * Created CommentPanel and ShareSheet as sub-components
+- Updated MessagesScreen.tsx:
+  * Phone button: Shows toast "Appel vocal bientôt disponible 📞"
+  * Video button: Shows toast "Appel vidéo bientôt disponible 📹"
+  * MoreVertical button: Shows dropdown menu with Voir le profil (toast), Bloquer (confirm toast → "Utilisateur bloqué"), Signaler (toast "Signalement envoyé"). Closes on click outside.
+  * Paperclip button: Shows bottom sheet with 3 options: Photo (📷 toast), Document (📄 toast), Localisation (📍 toast). Closes after selection.
+  * Smile/Emoji button: Shows emoji picker grid with 12 common emojis (😀❤️🔥👍🎉💯✨🚀💪🙌😂🥳). Inserts emoji into message input, closes after selection.
+- Updated ProfileScreen.tsx:
+  * Edit Profile button: Opens modal with Name, Bio, Location, Website fields (pre-filled). Save button → toast "Profil mis à jour !" + close. Cancel button → close.
+  * Share Profile button: Copies profile link to clipboard + toast "Lien de profil copié ! 🔗"
+  * Settings button (both top-right and bottom): Opens settings panel (bottom sheet) with sections: Compte (Modifier email, Modifier mot de passe), Notifications (push/email toggles), Confidentialité (private account/online toggles), À propos (version, conditions, privacy policy), Déconnexion (red button, toast "Déconnexion...")
+  * Post Grid Cards: Click opens post detail modal with full flyer image, title, description, category badge, mode, location, deadline, Like/Comment/Share/Save action buttons, close button
+- Updated NewsScreen.tsx:
+  * Bell/Notification button: Opens notifications panel via setShowNotifications(true) from store
+  * "Lire" button on articles: Opens article detail modal with full image, title, excerpt, full text, author info with avatar, date, views, comments count, close button
+- Lint passes with 0 errors
+- All new modals/panels use dark backdrop + CSS animations (animate-slide-up, animate-scale-up, animate-fade-in)
+- All use toast() from sonner for notifications
+- All maintain same visual design language (dark theme, #D1F550 lime green, #0A0A0A bg)
+- Comment input submits on Enter key
+- Share sheet links open in new tabs
+- All existing functionality preserved
+
+Stage Summary:
+- All static buttons across all 4 screens are now functional
+- 6 new interactive UI patterns implemented: comment panel, share sheet, chat menu dropdown, attach sheet, emoji picker, settings panel
+- 3 new modal types: edit profile, post detail, article detail
+- All interactions use toast notifications for feedback
+- Zero lint errors, dev server running correctly
