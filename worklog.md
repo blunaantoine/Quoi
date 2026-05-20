@@ -71,3 +71,21 @@ Stage Summary:
 - Simulation mode works when Gmail unavailable
 - All inappropriate emojis removed from UI titles/buttons
 - API endpoints tested and working: /api/v1/auth/otp, /forgot-password, /verify-email
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix OTP email verification system - email bounce with fake domains, forgot-password OTP re-verification bug, remove decorative emojis
+
+Work Log:
+- Investigated the email bounce error: user tested with test@example.com which doesn't receive email. Gmail SMTP is working correctly.
+- Fixed critical forgot-password OTP bug: OTP was consumed during "verify" step, then the "reset" step failed because OTP was already marked as used. Added `consume` parameter to `verifyOtp()` function — "verify" step now uses `consume: false` and "reset" step uses `consume: true`.
+- Added email domain validation: blocked known fake/test domains (example.com, example.org, test.com, fake.com, etc.) in both backend (`initiateOtp` in auth.ts) and frontend (LoginScreen, SignupScreen, ForgotPasswordDialog).
+- Updated all 3 OTP API routes (otp, forgot-password, verify-email) to properly return error when `initiateOtp` fails due to blocked domain.
+- Removed decorative 📎 emoji from AddScreen.tsx file info display.
+- Lint passes clean. App compiles and runs successfully.
+
+Stage Summary:
+- Fixed forgot-password flow: OTP is no longer prematurely consumed, allowing the reset step to verify and consume it properly
+- Email validation prevents users from entering fake email domains (example.com etc.) with immediate frontend feedback and backend enforcement
+- Decorative emoji removed from UI; emojis in user content (bio, messages, descriptions) are preserved

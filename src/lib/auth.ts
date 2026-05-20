@@ -34,6 +34,30 @@ const memoryOtpStore = new Map<string, { codeHash: string; expiresAt: Date; purp
 
 // ─── Send OTP ───────────────────────────────────────────────────────
 
+// ─── Blocked email domains ─────────────────────────────────────────────
+// Common test/fake domains that should not receive OTP emails
+
+const BLOCKED_DOMAINS = [
+  'example.com',
+  'example.org',
+  'example.net',
+  'test.com',
+  'fake.com',
+  'invalid.com',
+  'localhost',
+  'localhost.com',
+]
+
+/**
+ * Check if an email domain is valid (not a known fake/test domain).
+ */
+function isEmailDomainValid(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase()
+  if (!domain) return false
+  if (BLOCKED_DOMAINS.includes(domain)) return false
+  return true
+}
+
 interface SendOtpResult {
   success: boolean
   plainCode?: string  // Only included in simulation mode
@@ -44,11 +68,19 @@ interface SendOtpResult {
 /**
  * Generate and send an OTP code for a given email and purpose.
  * Returns the plain code only in simulation mode.
+ * Rejects known fake/test email domains.
  */
 export async function initiateOtp(
   email: string,
   purpose: 'login' | 'email_verification' | 'password_reset'
 ): Promise<SendOtpResult> {
+  // Validate email domain
+  if (!isEmailDomainValid(email)) {
+    return {
+      success: false,
+      message: 'Veuillez utiliser une adresse email valide (domaine non autorisé).',
+    }
+  }
   const code = createOtp()
   const codeHash = hashSha256(code)
   const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60_000)
@@ -104,11 +136,15 @@ interface VerifyOtpResult {
 
 /**
  * Verify an OTP code entered by the user.
+ * If `consume` is false, the OTP is checked but NOT marked as used.
+ * This is useful for multi-step flows like password reset where the OTP
+ * needs to be verified first, then used again when actually resetting.
  */
 export async function verifyOtp(
   email: string,
   code: string,
-  purpose: 'login' | 'email_verification' | 'password_reset'
+  purpose: 'login' | 'email_verification' | 'password_reset',
+  consume: boolean = true
 ): Promise<VerifyOtpResult> {
   const codeHash = hashSha256(code)
   const now = new Date()
@@ -133,11 +169,13 @@ export async function verifyOtp(
       return { valid: false, error: 'Code incorrect. Veuillez réessayer.' }
     }
 
-    // Mark as used
-    await db.otpCode.update({
-      where: { id: otpRecord.id },
-      data: { isUsed: true },
-    })
+    // Mark as used only if consume is true
+    if (consume) {
+      await db.otpCode.update({
+        where: { id: otpRecord.id },
+        data: { isUsed: true },
+      })
+    }
 
     return { valid: true }
   } catch {
@@ -158,7 +196,9 @@ export async function verifyOtp(
       return { valid: false, error: 'Code incorrect. Veuillez réessayer.' }
     }
 
-    memoryOtpStore.delete(key)
+    if (consume) {
+      memoryOtpStore.delete(key)
+    }
     return { valid: true }
   }
 }

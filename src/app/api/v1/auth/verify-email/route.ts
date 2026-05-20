@@ -22,6 +22,10 @@ export async function POST(request: NextRequest) {
     if (action === 'send') {
       const result = await initiateOtp(email, 'email_verification')
 
+      if (!result.success) {
+        return NextResponse.json({ error: result.message || 'Erreur lors de l\'envoi du code.' }, { status: 400 })
+      }
+
       return NextResponse.json({
         success: result.success,
         message: result.message || 'Code de vérification envoyé.',

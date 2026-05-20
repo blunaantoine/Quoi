@@ -23,6 +23,10 @@ export async function POST(request: NextRequest) {
     if (action === 'send') {
       const result = await initiateOtp(email, 'password_reset')
 
+      if (!result.success) {
+        return NextResponse.json({ error: result.message || 'Erreur lors de l\'envoi du code.' }, { status: 400 })
+      }
+
       return NextResponse.json({
         success: result.success,
         message: result.message || 'Code de réinitialisation envoyé.',
@@ -37,7 +41,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Code OTP requis.' }, { status: 400 })
       }
 
-      const verifyResult = await verifyOtp(email, code, 'password_reset')
+      // Verify OTP without consuming it — it will be consumed during the "reset" step
+      const verifyResult = await verifyOtp(email, code, 'password_reset', false)
 
       if (!verifyResult.valid) {
         return NextResponse.json({ error: verifyResult.error }, { status: 400 })
@@ -59,8 +64,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Le mot de passe doit avoir au moins 6 caractères.' }, { status: 400 })
       }
 
-      // Verify OTP one more time before resetting
-      const verifyResult = await verifyOtp(email, code, 'password_reset')
+      // Verify AND consume the OTP — this is the final step
+      const verifyResult = await verifyOtp(email, code, 'password_reset', true)
 
       if (!verifyResult.valid) {
         return NextResponse.json({ error: verifyResult.error }, { status: 400 })

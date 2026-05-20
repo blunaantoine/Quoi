@@ -115,6 +115,14 @@ function ForgotPasswordDialog({ onClose }: { onClose: () => void }) {
       return
     }
 
+    // Check for obviously fake email domains
+    const blockedDomains = ['example.com', 'example.org', 'test.com', 'fake.com']
+    const domain = email.split('@')[1]?.toLowerCase()
+    if (domain && blockedDomains.includes(domain)) {
+      toast('Veuillez utiliser une adresse email valide')
+      return
+    }
+
     setIsLoading(true)
     try {
       const response = await fetch('/api/v1/auth/forgot-password', {
@@ -418,6 +426,14 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       toast('Veuillez remplir tous les champs')
+      return
+    }
+
+    // Check for obviously fake email domains
+    const blockedDomains = ['example.com', 'example.org', 'test.com', 'fake.com']
+    const domain = email.split('@')[1]?.toLowerCase()
+    if (domain && blockedDomains.includes(domain)) {
+      toast('Veuillez utiliser une adresse email valide')
       return
     }
 

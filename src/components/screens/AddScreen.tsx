@@ -260,7 +260,7 @@ export default function AddScreen() {
           {/* File info */}
           {selectedFile && !isUploading && (
             <div className="mt-2 text-xs text-muted-foreground">
-              📎 {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)} KB)
+              {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)} KB)
             </div>
           )}
         </div>

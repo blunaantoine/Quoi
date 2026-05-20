@@ -150,6 +150,14 @@ export default function SignupScreen() {
       return
     }
 
+    // Check for obviously fake email domains
+    const blockedDomains = ['example.com', 'example.org', 'test.com', 'fake.com']
+    const domain = email.split('@')[1]?.toLowerCase()
+    if (domain && blockedDomains.includes(domain)) {
+      toast('Veuillez utiliser une adresse email valide')
+      return
+    }
+
     if (password.length < 6) {
       toast('Le mot de passe doit avoir au moins 6 caractères')
       return
