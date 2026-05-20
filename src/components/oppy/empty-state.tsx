@@ -23,11 +23,11 @@ export function EmptyState({
         className
       )}
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#262626] border border-[#333333]">
-        <Icon className="h-8 w-8 text-[#A3A3A3]" />
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary border border-border">
+        <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-semibold text-white">{title}</h3>
-      <p className="max-w-xs text-sm text-[#A3A3A3]">{description}</p>
+      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      <p className="max-w-xs text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
       {/* Avatar ring */}
       <div
         className={cn(
-          'relative rounded-full ring-2 ring-[#333333] overflow-hidden',
+          'relative rounded-full ring-2 ring-border overflow-hidden',
           s.ring
         )}
       >
@@ -44,12 +44,12 @@ export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
       {/* Verified badge */}
       {user.verified && (
         <span
-          className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full bg-[#D1F550]"
+          className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full bg-primary"
           style={{ width: s.badge, height: s.badge }}
         >
           <BadgeCheck
             style={{ width: s.badge - 2, height: s.badge - 2 }}
-            className="text-[#0A0A0A]"
+            className="text-primary-foreground"
             strokeWidth={3}
           />
         </span>
@@ -59,7 +59,7 @@ export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
       {user.online && (
         <span
           className={cn(
-            'absolute bottom-0 right-0 rounded-full bg-emerald-500 border-[#1A1A1A]',
+            'absolute bottom-0 right-0 rounded-full bg-emerald-500 border-card',
             s.online
           )}
         />

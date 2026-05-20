@@ -12,9 +12,9 @@ interface ArticleCardProps {
 }
 
 const statusStyles: Record<EventStatus, string> = {
-  'À venir': 'bg-[#D1F550]/20 text-[#D1F550] border-[#D1F550]/40',
+  'À venir': 'bg-primary/20 text-primary border-primary/40',
   'En cours': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
-  'Terminé': 'bg-[#333333]/60 text-[#A3A3A3] border-[#333333]',
+  'Terminé': 'bg-muted/60 text-muted-foreground border-border',
 };
 
 function formatViews(n: number): string {
@@ -27,7 +27,7 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
   return (
     <article
       className={cn(
-        'flex gap-4 rounded-2xl border border-[#333333] bg-[#1A1A1A] p-4 transition-colors hover:border-[#D1F550]/30',
+        'flex gap-4 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/30',
         className
       )}
     >
@@ -55,17 +55,17 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
             >
               {article.status}
             </span>
-            <span className="inline-flex items-center gap-1 text-[10px] text-[#A3A3A3]">
+            <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
               <Clock className="h-3 w-3" />
               {article.date}
             </span>
           </div>
 
-          <h3 className="mb-1 line-clamp-2 text-sm font-semibold leading-snug text-white sm:text-base">
+          <h3 className="mb-1 line-clamp-2 text-sm font-semibold leading-snug text-foreground sm:text-base">
             {article.title}
           </h3>
 
-          <p className="line-clamp-2 text-xs text-[#A3A3A3] sm:text-sm">
+          <p className="line-clamp-2 text-xs text-muted-foreground sm:text-sm">
             {article.excerpt}
           </p>
         </div>
@@ -74,12 +74,12 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <UserAvatar user={article.author} size="sm" />
-            <span className="text-xs font-medium text-[#A3A3A3]">
+            <span className="text-xs font-medium text-muted-foreground">
               {article.author.name}
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-[#A3A3A3]">
+          <div className="flex items-center gap-3 text-muted-foreground">
             <span className="inline-flex items-center gap-1 text-xs">
               <Eye className="h-3.5 w-3.5" />
               {formatViews(article.views)}

@@ -78,7 +78,7 @@ export function AdOverlay() {
       onClick={handleBackdropClick}
     >
       <div
-        className="relative mx-4 w-full max-w-md overflow-hidden rounded-3xl border border-[#333333] bg-[#1A1A1A] animate-scale-up"
+        className="relative mx-4 w-full max-w-md overflow-hidden rounded-3xl border border-border bg-card animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -107,18 +107,17 @@ export function AdOverlay() {
               cy="16"
               r="14"
               fill="none"
-              stroke="#D1F550"
               strokeWidth="2"
               strokeLinecap="round"
               strokeDasharray={`${2 * Math.PI * 14}`}
               strokeDashoffset={`${2 * Math.PI * 14 * (1 - countdown / AUTO_CLOSE_SECONDS)}`}
-              className="transition-all duration-1000 ease-linear"
+              className="stroke-primary transition-all duration-1000 ease-linear"
             />
           </svg>
         </div>
 
         {/* Sponsorisé label */}
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#A3A3A3]">
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           Sponsorisé
         </span>
 
@@ -132,18 +131,18 @@ export function AdOverlay() {
             priority
             unoptimized
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
         </div>
 
         {/* Content */}
         <div className="px-5 pb-5 pt-2">
-          <h3 className="mb-1 text-lg font-bold text-white">{currentAd.title}</h3>
-          <p className="mb-4 text-sm text-[#A3A3A3] line-clamp-2">
+          <h3 className="mb-1 text-lg font-bold text-foreground">{currentAd.title}</h3>
+          <p className="mb-4 text-sm text-muted-foreground line-clamp-2">
             {currentAd.description}
           </p>
 
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#A3A3A3]">
+            <span className="text-xs text-muted-foreground">
               Par {currentAd.sponsor}
             </span>
 
@@ -151,7 +150,7 @@ export function AdOverlay() {
               href={currentAd.ctaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D1F550] px-4 py-2 text-sm font-semibold text-[#0A0A0A] hover:bg-[#c5e840] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               {currentAd.ctaText}
@@ -159,7 +158,7 @@ export function AdOverlay() {
           </div>
 
           {/* Countdown text */}
-          <p className="mt-3 text-center text-[11px] text-[#A3A3A3]/60">
+          <p className="mt-3 text-center text-[11px] text-muted-foreground/60">
             Fermeture automatique dans {countdown}s
           </p>
         </div>

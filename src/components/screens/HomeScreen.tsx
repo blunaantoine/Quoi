@@ -54,7 +54,7 @@ function getDeadline(deadline: string) {
 // ─── Tag badge config ───────────────────────────────────────────
 
 const tagConfig: Record<string, { icon: typeof Sparkles; color: string; textColor: string }> = {
-  Nouveau: { icon: Sparkles, color: 'bg-[#D1F550]/20', textColor: 'text-[#D1F550]' },
+  Nouveau: { icon: Sparkles, color: 'bg-primary/20', textColor: 'text-primary' },
   Urgent: { icon: Zap, color: 'bg-red-500/20', textColor: 'text-red-400' },
   Vérifié: { icon: CheckCircle2, color: 'bg-emerald-500/20', textColor: 'text-emerald-400' },
 }
@@ -146,12 +146,12 @@ function ShareSheet() {
         onClick={() => setShowShareSheet(false)}
       />
       <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
-        <div className="mx-auto max-w-lg bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl p-5 pb-8">
+        <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl p-5 pb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold text-white">Partager</h3>
+            <h3 className="text-base font-bold text-foreground">Partager</h3>
             <button
               onClick={() => setShowShareSheet(false)}
-              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -163,12 +163,12 @@ function ShareSheet() {
                 <button
                   key={option.label}
                   onClick={option.action}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors text-left"
                 >
-                  <div className="h-10 w-10 rounded-full bg-[#0A0A0A] border border-[#333333] flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-[#D1F550]" />
+                  <div className="h-10 w-10 rounded-full bg-background border border-border flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-white">{option.label}</span>
+                  <span className="text-sm font-medium text-foreground">{option.label}</span>
                 </button>
               )
             })}
@@ -221,15 +221,15 @@ function CommentPanel() {
         onClick={() => setShowComments(false)}
       />
       <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
-        <div className="mx-auto max-w-lg bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl flex flex-col max-h-[70vh]">
+        <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl flex flex-col max-h-[70vh]">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[#333333]">
-            <h3 className="text-base font-bold text-white">
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h3 className="text-base font-bold text-foreground">
               Commentaires ({comments.length})
             </h3>
             <button
               onClick={() => setShowComments(false)}
-              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -240,7 +240,7 @@ function CommentPanel() {
             {comments.length > 0 ? (
               comments.map((comment) => (
                 <div key={comment.id} className="flex gap-3 animate-fade-slide-in">
-                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-[#333333]">
+                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
                     <Image
                       src={comment.author.avatar}
                       alt={comment.author.name}
@@ -252,20 +252,20 @@ function CommentPanel() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-white">
+                      <span className="text-sm font-semibold text-foreground">
                         {comment.author.name}
                       </span>
                       {comment.author.verified && (
-                        <BadgeCheck className="w-3.5 h-3.5 text-[#D1F550]" strokeWidth={3} />
+                        <BadgeCheck className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
                       )}
-                      <span className="text-[11px] text-[#A3A3A3] ml-auto">
+                      <span className="text-[11px] text-muted-foreground ml-auto">
                         {timeAgo(comment.timestamp)}
                       </span>
                     </div>
-                    <p className="text-sm text-[#A3A3A3] leading-relaxed mt-0.5">
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
                       {comment.text}
                     </p>
-                    <button className="flex items-center gap-1 mt-1 text-[#A3A3A3] hover:text-[#D1F550] transition-colors">
+                    <button className="flex items-center gap-1 mt-1 text-muted-foreground hover:text-primary transition-colors">
                       <ThumbsUp className="w-3 h-3" />
                       <span className="text-[11px]">{comment.likes}</span>
                     </button>
@@ -275,15 +275,15 @@ function CommentPanel() {
             ) : (
               <div className="text-center py-8">
                 <MessageCircle className="w-8 h-8 text-[#333333] mx-auto mb-2" />
-                <p className="text-sm text-[#A3A3A3]">Aucun commentaire pour le moment</p>
-                <p className="text-xs text-[#A3A3A3]/70 mt-1">Soyez le premier à commenter !</p>
+                <p className="text-sm text-muted-foreground">Aucun commentaire pour le moment</p>
+                <p className="text-xs text-muted-foreground/70 mt-1">Soyez le premier à commenter !</p>
               </div>
             )}
           </div>
 
           {/* Comment input */}
-          <div className="p-3 border-t border-[#333333] flex items-center gap-2">
-            <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-[#333333]">
+          <div className="p-3 border-t border-border flex items-center gap-2">
+            <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
               <Image
                 src={currentOppUser.avatar}
                 alt={currentOppUser.name}
@@ -300,12 +300,12 @@ function CommentPanel() {
               onChange={(e) => setCommentText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               placeholder="Écrire un commentaire..."
-              className="flex-1 bg-[#0A0A0A] border border-[#333333] rounded-full px-4 py-2 text-sm text-white placeholder:text-[#A3A3A3] focus:outline-none focus:border-[#D1F550]/50 transition-colors"
+              className="flex-1 bg-background border border-border rounded-full px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
             />
             <button
               onClick={handleSubmit}
               disabled={!commentText.trim()}
-              className="h-8 w-8 rounded-full bg-[#D1F550] flex items-center justify-center text-[#0A0A0A] disabled:opacity-40 disabled:cursor-not-allowed shrink-0 hover:bg-[#c5e840] transition-colors"
+              className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed shrink-0 hover:bg-primary/90 transition-colors"
             >
               <Send className="w-4 h-4" />
             </button>
@@ -375,7 +375,7 @@ function FeedCard({ post }: { post: OppPost }) {
 
   return (
     <div
-      className="relative h-full w-full select-none overflow-hidden bg-[#0A0A0A] scroll-snap-align-start"
+      className="relative h-full w-full select-none overflow-hidden bg-background scroll-snap-align-start"
       onClick={handleTap}
     >
       {/* ── Flyer background ── */}
@@ -389,8 +389,8 @@ function FeedCard({ post }: { post: OppPost }) {
       />
 
       {/* ── Gradient overlays ── */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/70 to-[#0A0A0A]/20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-transparent" />
 
       {/* ── Top tags row ── */}
       <div className="absolute left-4 right-16 top-4 z-10 flex flex-wrap gap-1.5">
@@ -454,13 +454,13 @@ function FeedCard({ post }: { post: OppPost }) {
             </h2>
 
             {/* Description */}
-            <p className="mb-3 text-sm leading-relaxed text-[#A3A3A3] line-clamp-2">
+            <p className="mb-3 text-sm leading-relaxed text-muted-foreground line-clamp-2">
               {post.description}
             </p>
 
             {/* Location + Deadline */}
             <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs">
-              <span className="inline-flex items-center gap-1 text-[#A3A3A3]">
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
                 {post.location}
               </span>
@@ -472,7 +472,7 @@ function FeedCard({ post }: { post: OppPost }) {
                     ? 'bg-red-500/20 text-red-400'
                     : deadline.urgent
                       ? 'bg-red-500/20 text-red-400'
-                      : 'bg-[#262626] text-[#A3A3A3]'
+                      : 'bg-secondary text-muted-foreground'
                 )}
               >
                 <Clock className="h-3 w-3" />
@@ -486,7 +486,7 @@ function FeedCard({ post }: { post: OppPost }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D1F550] px-4 py-1.5 text-xs font-semibold text-[#0A0A0A] hover:bg-[#c5e840] transition-colors shadow-lg shadow-[#D1F550]/20"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Participer
@@ -494,7 +494,7 @@ function FeedCard({ post }: { post: OppPost }) {
 
             {/* Author row with Suivre button */}
             <div className="mt-3 flex items-center gap-2">
-              <div className="relative h-8 w-8 shrink-0 rounded-full ring-2 ring-[#333333] overflow-hidden">
+              <div className="relative h-8 w-8 shrink-0 rounded-full ring-2 ring-border overflow-hidden">
                 <Image
                   src={post.author.avatar}
                   alt={post.author.name}
@@ -504,11 +504,11 @@ function FeedCard({ post }: { post: OppPost }) {
                   unoptimized
                 />
               </div>
-              <span className="text-sm font-medium text-white">
+              <span className="text-sm font-medium text-foreground">
                 {post.author.name}
               </span>
               {post.author.verified && (
-                <BadgeCheck className="h-4 w-4 text-[#D1F550]" strokeWidth={3} />
+                <BadgeCheck className="h-4 w-4 text-primary" strokeWidth={3} />
               )}
               <button
                 onClick={(e) => {
@@ -518,8 +518,8 @@ function FeedCard({ post }: { post: OppPost }) {
                 className={cn(
                   'ml-auto rounded-full px-3 py-1 text-[11px] font-semibold transition-all',
                   following
-                    ? 'bg-[#262626] text-[#A3A3A3] border border-[#333333]'
-                    : 'bg-[#D1F550] text-[#0A0A0A] hover:bg-[#c5e840]'
+                    ? 'bg-secondary text-muted-foreground border border-border'
+                    : 'bg-primary text-primary-foreground hover:bg-primary/90'
                 )}
               >
                 {following ? 'Suivi' : 'Suivre'}
@@ -583,7 +583,7 @@ function FeedCard({ post }: { post: OppPost }) {
               <Bookmark
                 className={cn(
                   'h-7 w-7 transition-colors drop-shadow-lg',
-                  saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
+                  saved ? 'fill-primary text-primary' : 'text-white'
                 )}
               />
               <span className="text-[11px] font-semibold text-white drop-shadow">
@@ -634,23 +634,23 @@ export default function HomeScreen() {
   )
 
   return (
-    <div className="relative h-[calc(100vh-64px)] w-full overflow-hidden bg-[#0A0A0A]">
+    <div className="relative h-[calc(100vh-64px)] w-full overflow-hidden bg-background">
       {/* ── Sticky header overlay ── */}
       <div className="absolute inset-x-0 top-0 z-30 pointer-events-none">
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <div className="flex items-center gap-2 pointer-events-auto">
             <div className="flex items-center gap-2 animate-slide-down">
-              <div className="w-8 h-8 rounded-lg bg-[#D1F550] flex items-center justify-center shadow-lg shadow-[#D1F550]/20">
-                <Zap className="w-5 h-5 text-[#0A0A0A]" />
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-white drop-shadow-lg">
+              <h1 className="text-xl font-bold text-foreground drop-shadow-lg">
                 OPP<span className="text-[#D1F550]">Y</span>
               </h1>
             </div>
           </div>
 
           <button
-            className="pointer-events-auto h-9 w-9 rounded-full bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#333333]/50 flex items-center justify-center text-[#A3A3A3] hover:text-white hover:bg-[#262626] transition-colors animate-slide-down active:scale-90"
+            className="pointer-events-auto h-9 w-9 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors animate-slide-down active:scale-90"
             onClick={() => setShowSearch(!showSearch)}
             style={{ animationDelay: '0.1s' }}
           >
@@ -666,13 +666,13 @@ export default function HomeScreen() {
         >
           <div className="px-4 pb-2">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Rechercher des opportunités..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 bg-[#1A1A1A]/90 backdrop-blur-sm border border-[#333333] text-white placeholder:text-[#A3A3A3] rounded-xl h-10 text-sm focus:outline-none focus:border-[#D1F550]/50 focus:ring-1 focus:ring-[#D1F550]/20 transition-all"
+                className="w-full pl-9 pr-4 bg-card/90 backdrop-blur-sm border border-border text-foreground placeholder:text-muted-foreground rounded-xl h-10 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                 autoFocus
               />
             </div>
@@ -690,8 +690,8 @@ export default function HomeScreen() {
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all shrink-0',
               activeCategory === 'all'
-                ? 'bg-[#D1F550] text-[#0A0A0A] border-[#D1F550] shadow-lg shadow-[#D1F550]/20'
-                : 'bg-[#1A1A1A]/80 backdrop-blur-sm text-[#A3A3A3] border-[#333333]/50 hover:border-[#D1F550]/30 hover:text-[#D1F550]'
+                ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
+                : 'bg-card/80 backdrop-blur-sm text-muted-foreground border-border/50 hover:border-primary/30 hover:text-primary'
             )}
           >
             Tout
@@ -707,8 +707,8 @@ export default function HomeScreen() {
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all shrink-0 backdrop-blur-sm',
                   isActive
-                    ? 'bg-[#D1F550] text-[#0A0A0A] border-[#D1F550] shadow-lg shadow-[#D1F550]/20'
-                    : 'bg-[#1A1A1A]/80 text-[#A3A3A3] border-[#333333]/50 hover:border-[#D1F550]/30 hover:text-[#D1F550]'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
+                    : 'bg-card/80 text-muted-foreground border-border/50 hover:border-primary/30 hover:text-primary'
                 )}
               >
                 <Icon className="w-3 h-3" />
@@ -719,7 +719,7 @@ export default function HomeScreen() {
         </div>
 
         {/* Fade gradient at bottom of header */}
-        <div className="h-4 bg-gradient-to-b from-[#0A0A0A]/60 to-transparent pointer-events-none" />
+        <div className="h-4 bg-gradient-to-b from-background/60 to-transparent pointer-events-none" />
       </div>
 
       {/* ── Vertical snap scroll feed ── */}
@@ -750,11 +750,11 @@ export default function HomeScreen() {
             style={{ height: 'calc(100vh - 64px)' }}
           >
             <div className="animate-fade-slide-in">
-              <div className="w-16 h-16 rounded-2xl bg-[#1A1A1A] border border-[#333333] flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-[#A3A3A3]" />
+              <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Aucune opportunité</h3>
-              <p className="text-sm text-[#A3A3A3]">
+              <h3 className="text-lg font-bold text-foreground mb-2">Aucune opportunité</h3>
+              <p className="text-sm text-muted-foreground">
                 {searchQuery
                   ? 'Aucun résultat pour votre recherche. Essayez d\'autres mots-clés.'
                   : 'Aucune opportunité dans cette catégorie pour le moment.'}
@@ -764,7 +764,7 @@ export default function HomeScreen() {
                   setActiveCategory('all')
                   setSearchQuery('')
                 }}
-                className="mt-4 rounded-full bg-[#D1F550] px-5 py-2 text-sm font-semibold text-[#0A0A0A] hover:bg-[#c5e840] transition-colors"
+                className="mt-4 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 Voir toutes les opportunités
               </button>

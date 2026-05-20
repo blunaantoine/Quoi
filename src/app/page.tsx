@@ -44,7 +44,7 @@ function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-lg">
-        <div className="bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-[#333333]/50">
+        <div className="bg-background/95 backdrop-blur-xl border-t border-border/50">
           <div className="flex items-center justify-around px-2 py-1 safe-area-bottom">
             {NAV_ITEMS.map((item) => {
               const isActive = activeTab === item.tab
@@ -60,7 +60,7 @@ function BottomNav() {
                     <div className="w-12 h-12 rounded-2xl bg-[#D1F550] flex items-center justify-center shadow-lg shadow-[#D1F550]/25 hover:shadow-[#D1F550]/40 transition-all active:scale-95">
                       <Plus className="w-6 h-6 text-[#0A0A0A]" strokeWidth={2.5} />
                     </div>
-                    <span className="text-[10px] mt-1 text-[#A3A3A3] font-medium">
+                    <span className="text-[10px] mt-1 text-muted-foreground font-medium">
                       {item.label}
                     </span>
                   </button>
@@ -76,13 +76,13 @@ function BottomNav() {
                   <div className="relative">
                     <Icon
                       className={`w-5 h-5 transition-colors ${
-                        isActive ? 'text-[#D1F550]' : 'text-[#A3A3A3] group-hover:text-white'
+                        isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
                       }`}
                       strokeWidth={isActive ? 2.5 : 2}
                     />
                     {/* Active indicator dot - CSS transition instead of layoutId */}
                     <div
-                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D1F550] transition-all duration-300 ${
+                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary transition-all duration-300 ${
                         isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
                       }`}
                     />
@@ -93,12 +93,12 @@ function BottomNav() {
                       </span>
                     )}
                     {item.tab === 'news' && notifications.filter(n => !n.read).length > 0 && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#D1F550]" />
+                      <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary" />
                     )}
                   </div>
                   <span
                     className={`text-[10px] mt-1 font-medium transition-colors ${
-                      isActive ? 'text-[#D1F550]' : 'text-[#A3A3A3] group-hover:text-white'
+                      isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
                     }`}
                   >
                     {item.label}
@@ -149,9 +149,9 @@ function ScreenRenderer() {
 
 export default function OppyHome() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-background">
       {/* Mobile-first container, centered on desktop */}
-      <div className="mx-auto max-w-lg min-h-screen relative bg-[#0A0A0A] shadow-2xl shadow-black/50">
+      <div className="mx-auto max-w-lg min-h-screen relative bg-background shadow-2xl shadow-black/50">
         {/* Main content area */}
         <main className="pb-16">
           <ScreenRenderer />

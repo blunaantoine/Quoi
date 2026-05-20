@@ -54,12 +54,12 @@ function ArticleDetailModal({ article, onClose }: { article: Article; onClose: (
         onClick={onClose}
       />
       <div className="fixed inset-x-0 top-1/2 left-1/2 z-[70] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[85vh] animate-scale-up">
-        <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[85vh]">
           {/* Header with close */}
           <div className="absolute top-3 right-3 z-10">
             <button
               onClick={onClose}
-              className="h-8 w-8 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-colors"
+              className="h-8 w-8 rounded-full bg-black/60 flex items-center justify-center text-foreground hover:bg-black/80 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -76,7 +76,7 @@ function ArticleDetailModal({ article, onClose }: { article: Article; onClose: (
                 className="object-cover"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
 
               {/* Status badge */}
               <div className="absolute top-3 left-3">
@@ -91,19 +91,19 @@ function ArticleDetailModal({ article, onClose }: { article: Article; onClose: (
 
             {/* Content */}
             <div className="p-5 -mt-4 relative">
-              <h2 className="text-lg font-bold text-white mb-2 leading-snug">{article.title}</h2>
+              <h2 className="text-lg font-bold text-foreground mb-2 leading-snug">{article.title}</h2>
 
               {/* Author info */}
-              <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-[#333333]">
+              <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-border">
                 <UserAvatar user={article.author} size="sm" />
                 <div>
-                  <span className="text-sm font-medium text-white block">{article.author.name}</span>
-                  <span className="text-xs text-[#A3A3A3]">{article.author.role}</span>
+                  <span className="text-sm font-medium text-foreground block">{article.author.name}</span>
+                  <span className="text-xs text-muted-foreground">{article.author.role}</span>
                 </div>
               </div>
 
               {/* Meta row */}
-              <div className="flex items-center gap-3 text-[#A3A3A3] mb-4">
+              <div className="flex items-center gap-3 text-muted-foreground mb-4">
                 <span className="inline-flex items-center gap-1 text-xs">
                   <Clock className="h-3.5 w-3.5" />
                   {formatDate(article.date)}
@@ -119,12 +119,12 @@ function ArticleDetailModal({ article, onClose }: { article: Article; onClose: (
               </div>
 
               {/* Excerpt */}
-              <p className="text-sm text-[#A3A3A3] leading-relaxed mb-4 font-medium">
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4 font-medium">
                 {article.excerpt}
               </p>
 
               {/* Full text (using excerpt as full text for mock) */}
-              <div className="text-sm text-[#A3A3A3]/80 leading-relaxed space-y-3">
+              <div className="text-sm text-muted-foreground/80 leading-relaxed space-y-3">
                 <p>{article.excerpt}</p>
                 <p>
                   Cette analyse approfondie met en lumière les tendances clés et les perspectives
@@ -158,7 +158,7 @@ function ArticleCard({
 
   return (
     <article className="group animate-fade-slide-in">
-      <div className="bg-[#1A1A1A] rounded-2xl border border-[#333333] overflow-hidden hover:border-[#D1F550]/30 transition-all active:scale-[0.98] cursor-pointer">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden hover:border-primary/30 transition-all active:scale-[0.98] cursor-pointer">
         {/* Image thumbnail */}
         <div className="relative h-44 w-full overflow-hidden">
           <Image
@@ -168,7 +168,7 @@ function ArticleCard({
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             unoptimized
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
 
           {/* Status badge overlay */}
           <div className="absolute top-3 left-3">
@@ -184,24 +184,24 @@ function ArticleCard({
         {/* Content */}
         <div className="p-4">
           {/* Title + Excerpt */}
-          <h3 className="font-semibold text-white text-[15px] leading-snug mb-1.5 line-clamp-2 group-hover:text-[#D1F550] transition-colors">
+          <h3 className="font-semibold text-foreground text-[15px] leading-snug mb-1.5 line-clamp-2 group-hover:text-primary transition-colors">
             {article.title}
           </h3>
-          <p className="text-[#A3A3A3] text-sm leading-relaxed mb-3 line-clamp-2">
+          <p className="text-muted-foreground text-sm leading-relaxed mb-3 line-clamp-2">
             {article.excerpt}
           </p>
 
           {/* Author */}
           <div className="flex items-center gap-2.5 mb-3">
             <UserAvatar user={article.author} size="sm" />
-            <span className="text-xs font-medium text-[#A3A3A3]">
+            <span className="text-xs font-medium text-muted-foreground">
               {article.author.name}
             </span>
           </div>
 
           {/* Meta row */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 text-[#A3A3A3]">
+            <div className="flex items-center gap-3 text-muted-foreground">
               <span className="inline-flex items-center gap-1 text-xs">
                 <Clock className="h-3.5 w-3.5" />
                 {formatDate(article.date)}
@@ -219,7 +219,7 @@ function ArticleCard({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 text-xs text-[#D1F550] hover:text-[#D1F550] hover:bg-[#D1F550]/10 gap-1"
+              className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10 gap-1"
               onClick={(e) => {
                 e.stopPropagation()
                 onLire()
@@ -266,21 +266,21 @@ export default function NewsScreen() {
   }, [activeFilter, searchQuery])
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-background">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-40 bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-[#333333]/50">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50">
         <div className="px-4 pt-4 pb-3">
           {/* Title + Bell */}
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-xl font-bold text-white">Actualités</h1>
+            <h1 className="text-xl font-bold text-foreground">Actualités</h1>
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-[#A3A3A3] hover:text-white hover:bg-[#262626] relative"
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary relative"
               onClick={() => setShowNotifications(true)}
             >
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#D1F550] rounded-full" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
             </Button>
           </div>
 
@@ -292,8 +292,8 @@ export default function NewsScreen() {
                 onClick={() => setActiveFilter(filter)}
                 className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
                   activeFilter === filter
-                    ? 'bg-[#D1F550] text-[#0A0A0A]'
-                    : 'bg-[#1A1A1A] border border-[#333333] text-[#A3A3A3] hover:border-[#D1F550]/30 hover:text-white'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
                 }`}
               >
                 {filter}
@@ -303,18 +303,18 @@ export default function NewsScreen() {
 
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher un article..."
-              className="w-full h-10 pl-9 pr-9 bg-[#1A1A1A] border border-[#333333] rounded-xl text-sm text-white placeholder:text-[#A3A3A3] outline-none focus:border-[#D1F550]/60 transition-colors"
+              className="w-full h-10 pl-9 pr-9 bg-card border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-[#333333] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -335,7 +335,7 @@ export default function NewsScreen() {
           ))
         ) : (
           <div className="text-center py-12 animate-fade-in">
-            <p className="text-[#A3A3A3] text-sm">Aucun article trouvé</p>
+            <p className="text-muted-foreground text-sm">Aucun article trouvé</p>
           </div>
         )}
       </div>

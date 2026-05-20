@@ -44,7 +44,7 @@ function useDeadline(deadline: string) {
 // ─── Tag badges ───────────────────────────────────────────────────
 
 const tagConfig: Record<string, { icon: typeof Sparkles; color: string; textColor: string }> = {
-  Nouveau: { icon: Sparkles, color: 'bg-[#D1F550]/20', textColor: 'text-[#D1F550]' },
+  Nouveau: { icon: Sparkles, color: 'bg-primary/20', textColor: 'text-primary' },
   Urgent: { icon: Zap, color: 'bg-red-500/20', textColor: 'text-red-400' },
   Vérifié: { icon: CheckCircle2, color: 'bg-emerald-500/20', textColor: 'text-emerald-400' },
 };
@@ -101,7 +101,7 @@ export function OppCard({ post, className }: OppCardProps) {
   return (
     <div
       className={cn(
-        'relative h-full w-full select-none overflow-hidden bg-[#0A0A0A]',
+        'relative h-full w-full select-none overflow-hidden bg-background',
         className
       )}
       onClick={handleTap}
@@ -117,7 +117,7 @@ export function OppCard({ post, className }: OppCardProps) {
       />
 
       {/* ── Gradient overlay ── */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
 
       {/* ── Top bar: tags ── */}
       <div className="absolute left-4 right-16 top-4 z-10 flex flex-wrap gap-2">
@@ -171,13 +171,13 @@ export function OppCard({ post, className }: OppCardProps) {
             </h2>
 
             {/* Description */}
-            <p className="mb-3 text-sm leading-relaxed text-[#A3A3A3] line-clamp-2">
+            <p className="mb-3 text-sm leading-relaxed text-muted-foreground line-clamp-2">
               {post.description}
             </p>
 
             {/* Location + Deadline + External link */}
             <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs">
-              <span className="inline-flex items-center gap-1 text-[#A3A3A3]">
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
                 {post.location}
               </span>
@@ -187,7 +187,7 @@ export function OppCard({ post, className }: OppCardProps) {
                   'inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold',
                   deadline.urgent
                     ? 'bg-red-500/20 text-red-400'
-                    : 'bg-[#262626] text-[#A3A3A3]'
+                    : 'bg-secondary text-muted-foreground'
                 )}
               >
                 <Clock className="h-3 w-3" />
@@ -200,7 +200,7 @@ export function OppCard({ post, className }: OppCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D1F550] px-4 py-1.5 text-xs font-semibold text-[#0A0A0A] hover:bg-[#c5e840] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Voir l&apos;opportunité
@@ -213,7 +213,7 @@ export function OppCard({ post, className }: OppCardProps) {
                 {post.author.name}
               </span>
               {post.author.verified && (
-                <CheckCircle2 className="h-4 w-4 text-[#D1F550]" />
+                <CheckCircle2 className="h-4 w-4 text-primary" />
               )}
             </div>
           </div>
@@ -274,7 +274,7 @@ export function OppCard({ post, className }: OppCardProps) {
               <Bookmark
                 className={cn(
                   'h-7 w-7 transition-colors',
-                  saved ? 'fill-[#D1F550] text-[#D1F550]' : 'text-white'
+                  saved ? 'fill-primary text-primary' : 'text-white'
                 )}
               />
               <span className="text-xs font-semibold text-white">

@@ -20,7 +20,7 @@ import { useAppStore } from '@/lib/store'
 const notifIconMap: Record<Notification['type'], { icon: typeof Heart; color: string; bg: string }> = {
   like: { icon: Heart, color: 'text-red-400', bg: 'bg-red-500/20' },
   comment: { icon: MessageCircle, color: 'text-sky-400', bg: 'bg-sky-500/20' },
-  follow: { icon: UserPlus, color: 'text-[#D1F550]', bg: 'bg-[#D1F550]/20' },
+  follow: { icon: UserPlus, color: 'text-primary', bg: 'bg-primary/20' },
   mention: { icon: AtSign, color: 'text-violet-400', bg: 'bg-violet-500/20' },
   opportunity: { icon: Sparkles, color: 'text-amber-400', bg: 'bg-amber-500/20' },
 }
@@ -87,13 +87,13 @@ export function NotificationsPanel() {
       />
 
       {/* Slide-in panel from right */}
-      <div className="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-[#0A0A0A] border-l border-[#333333] shadow-2xl flex flex-col animate-slide-in-right">
+      <div className="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-background border-l border-border shadow-2xl flex flex-col animate-slide-in-right">
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-[#333333]">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-white">Notifications</h2>
+            <h2 className="text-lg font-bold text-foreground">Notifications</h2>
             {unreadCount > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-[#D1F550] text-[10px] font-bold text-[#0A0A0A] px-1.5">
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground px-1.5">
                 {unreadCount}
               </span>
             )}
@@ -102,7 +102,7 @@ export function NotificationsPanel() {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="flex items-center gap-1 rounded-full bg-[#1A1A1A] border border-[#333333] px-3 py-1.5 text-[11px] font-semibold text-[#D1F550] hover:bg-[#262626] transition-colors"
+                className="flex items-center gap-1 rounded-full bg-card border border-border px-3 py-1.5 text-[11px] font-semibold text-primary hover:bg-secondary transition-colors"
               >
                 <CheckCheck className="w-3.5 h-3.5" />
                 Tout marquer comme lu
@@ -110,7 +110,7 @@ export function NotificationsPanel() {
             )}
             <button
               onClick={close}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1A1A1A] border border-[#333333] text-[#A3A3A3] hover:text-white hover:bg-[#262626] transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               aria-label="Fermer les notifications"
             >
               <X className="w-4 h-4" />
@@ -119,7 +119,7 @@ export function NotificationsPanel() {
         </div>
 
         {/* ── Filter tabs ── */}
-        <div className="flex gap-1 px-4 py-3 border-b border-[#333333]/50 overflow-x-auto no-scrollbar">
+        <div className="flex gap-1 px-4 py-3 border-b border-border/50 overflow-x-auto no-scrollbar">
           {FILTER_TABS.map((tab) => (
             <button
               key={tab.key}
@@ -127,8 +127,8 @@ export function NotificationsPanel() {
               className={cn(
                 'px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shrink-0',
                 filter === tab.key
-                  ? 'bg-[#D1F550] text-[#0A0A0A]'
-                  : 'bg-[#1A1A1A] text-[#A3A3A3] border border-[#333333] hover:border-[#D1F550]/30 hover:text-[#D1F550]'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-card text-muted-foreground border border-border hover:border-primary/30 hover:text-primary'
               )}
             >
               {tab.label}
@@ -139,7 +139,7 @@ export function NotificationsPanel() {
         {/* ── Notifications list ── */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           {filteredNotifs.length > 0 ? (
-            <div className="divide-y divide-[#333333]/30">
+            <div className="divide-y divide-border/30">
               {filteredNotifs.map((notif) => {
                 const cfg = notifIconMap[notif.type]
                 const Icon = cfg.icon
@@ -149,14 +149,14 @@ export function NotificationsPanel() {
                     key={notif.id}
                     onClick={() => markAsRead(notif.id)}
                     className={cn(
-                      'flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#1A1A1A]/80 animate-fade-slide-in',
-                      !notif.read && 'bg-[#1A1A1A]/40'
+                      'flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-card/80 animate-fade-slide-in',
+                      !notif.read && 'bg-card/40'
                     )}
                   >
                     {/* Icon / avatar */}
                     <div className="relative shrink-0">
                       {notif.user ? (
-                        <div className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-[#333333]">
+                        <div className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-border">
                           <Image
                             src={notif.user.avatar}
                             alt={notif.user.name}
@@ -174,7 +174,7 @@ export function NotificationsPanel() {
                       {/* Type icon overlay */}
                       {notif.user && (
                         <div className={cn(
-                          'absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#0A0A0A]',
+                          'absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-background',
                           cfg.bg
                         )}>
                           <Icon className={cn('w-3 h-3', cfg.color)} />
@@ -186,18 +186,18 @@ export function NotificationsPanel() {
                     <div className="flex-1 min-w-0">
                       <p className={cn(
                         'text-sm leading-snug',
-                        notif.read ? 'text-[#A3A3A3]' : 'text-white font-medium'
+                        notif.read ? 'text-muted-foreground' : 'text-foreground font-medium'
                       )}>
                         {notif.description}
                       </p>
-                      <span className="mt-0.5 block text-[11px] text-[#A3A3A3]/70">
+                      <span className="mt-0.5 block text-[11px] text-muted-foreground/70">
                         {timeAgo(notif.timestamp)}
                       </span>
                     </div>
 
                     {/* Unread dot */}
                     {!notif.read && (
-                      <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#D1F550]" />
+                      <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
                     )}
                   </button>
                 )
@@ -205,11 +205,11 @@ export function NotificationsPanel() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center px-6">
-              <div className="w-14 h-14 rounded-2xl bg-[#1A1A1A] border border-[#333333] flex items-center justify-center mb-3">
-                <CheckCheck className="w-7 h-7 text-[#A3A3A3]" />
+              <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center mb-3">
+                <CheckCheck className="w-7 h-7 text-muted-foreground" />
               </div>
-              <p className="text-sm font-medium text-white mb-1">Aucune notification</p>
-              <p className="text-xs text-[#A3A3A3]">
+              <p className="text-sm font-medium text-foreground mb-1">Aucune notification</p>
+              <p className="text-xs text-muted-foreground">
                 {filter !== 'all'
                   ? `Aucune notification de type ${FILTER_TABS.find((t) => t.key === filter)?.label?.toLowerCase()}`
                   : 'Vous êtes à jour !'}

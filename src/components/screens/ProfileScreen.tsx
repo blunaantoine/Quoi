@@ -28,6 +28,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CategoryBadge } from '@/components/oppy/category-badge'
+import { ThemeToggle } from '@/components/oppy/theme-toggle'
 import { toast } from 'sonner'
 import {
   currentUser,
@@ -104,13 +105,13 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
       <div className="fixed inset-x-0 top-1/2 left-1/2 z-[70] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md animate-scale-up">
-        <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[#333333]">
-            <h3 className="text-base font-bold text-white">Modifier le profil</h3>
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h3 className="text-base font-bold text-foreground">Modifier le profil</h3>
             <button
               onClick={onClose}
-              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -119,54 +120,54 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
           {/* Form */}
           <div className="p-4 space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[#A3A3A3] mb-1.5">Nom</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Nom</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#0A0A0A] border border-[#333333] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#D1F550]/50 transition-colors"
+                className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#A3A3A3] mb-1.5">Bio</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Bio</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
-                className="w-full bg-[#0A0A0A] border border-[#333333] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#D1F550]/50 transition-colors resize-none"
+                className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors resize-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#A3A3A3] mb-1.5">Localisation</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Localisation</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-[#0A0A0A] border border-[#333333] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#D1F550]/50 transition-colors"
+                className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#A3A3A3] mb-1.5">Site web</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Site web</label>
               <input
                 type="text"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
-                className="w-full bg-[#0A0A0A] border border-[#333333] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#D1F550]/50 transition-colors"
+                className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
               />
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-2 p-4 border-t border-[#333333]">
+          <div className="flex gap-2 p-4 border-t border-border">
             <Button
               variant="outline"
-              className="flex-1 border-[#333333] text-[#A3A3A3] hover:bg-[#262626] hover:text-white rounded-xl"
+              className="flex-1 border-border text-muted-foreground hover:bg-secondary hover:text-foreground rounded-xl"
               onClick={onClose}
             >
               Annuler
             </Button>
             <Button
-              className="flex-1 bg-[#D1F550] text-[#0A0A0A] hover:bg-[#B8D940] rounded-xl font-semibold"
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-semibold"
               onClick={handleSave}
             >
               Enregistrer
@@ -193,13 +194,13 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
       <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up max-h-[85vh]">
-        <div className="mx-auto max-w-lg bg-[#1A1A1A] border-t border-[#333333] rounded-t-2xl flex flex-col max-h-[85vh]">
+        <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl flex flex-col max-h-[85vh]">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[#333333]">
-            <h3 className="text-base font-bold text-white">Paramètres</h3>
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h3 className="text-base font-bold text-foreground">Paramètres</h3>
             <button
               onClick={onClose}
-              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -207,53 +208,61 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-4 space-y-5">
+            {/* Apparence section */}
+            <div>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Apparence</h4>
+              <div className="space-y-1">
+                <ThemeToggle />
+              </div>
+            </div>
+
             {/* Compte section */}
             <div>
-              <h4 className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-3">Compte</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Compte</h4>
               <div className="space-y-1">
                 <button
                   onClick={() => toast('Modification email bientôt disponible')}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
                 >
-                  <Mail className="w-5 h-5 text-[#A3A3A3]" />
-                  <span className="text-sm text-white">Modifier email</span>
-                  <ChevronRight className="w-4 h-4 text-[#A3A3A3] ml-auto" />
+                  <Mail className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Modifier email</span>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto" />
                 </button>
                 <button
                   onClick={() => toast('Modification mot de passe bientôt disponible')}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
                 >
-                  <Lock className="w-5 h-5 text-[#A3A3A3]" />
-                  <span className="text-sm text-white">Modifier mot de passe</span>
-                  <ChevronRight className="w-4 h-4 text-[#A3A3A3] ml-auto" />
+                  <Lock className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Modifier mot de passe</span>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto" />
                 </button>
               </div>
             </div>
 
             {/* Notifications section */}
             <div>
-              <h4 className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-3">Notifications</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Notifications</h4>
               <div className="space-y-1">
                 <div className="flex items-center justify-between p-3 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Bell className="w-5 h-5 text-[#A3A3A3]" />
-                    <span className="text-sm text-white">Notifications push</span>
+                    <Bell className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-sm text-foreground">Notifications push</span>
                   </div>
                   <button
                     onClick={() => setPushNotif(!pushNotif)}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${pushNotif ? 'bg-[#D1F550]' : 'bg-[#333333]'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${pushNotif ? 'bg-primary' : 'bg-muted'}`}
                   >
                     <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${pushNotif ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-[#A3A3A3]" />
-                    <span className="text-sm text-white">Notifications email</span>
+                    <Mail className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-sm text-foreground">Notifications email</span>
                   </div>
                   <button
                     onClick={() => setEmailNotif(!emailNotif)}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${emailNotif ? 'bg-[#D1F550]' : 'bg-[#333333]'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${emailNotif ? 'bg-primary' : 'bg-muted'}`}
                   >
                     <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${emailNotif ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
@@ -263,28 +272,28 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
 
             {/* Confidentialité section */}
             <div>
-              <h4 className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-3">Confidentialité</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Confidentialité</h4>
               <div className="space-y-1">
                 <div className="flex items-center justify-between p-3 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-[#A3A3A3]" />
-                    <span className="text-sm text-white">Compte privé</span>
+                    <Shield className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-sm text-foreground">Compte privé</span>
                   </div>
                   <button
                     onClick={() => setPrivateAccount(!privateAccount)}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${privateAccount ? 'bg-[#D1F550]' : 'bg-[#333333]'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${privateAccount ? 'bg-primary' : 'bg-muted'}`}
                   >
                     <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${privateAccount ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Eye className="w-5 h-5 text-[#A3A3A3]" />
-                    <span className="text-sm text-white">Afficher en ligne</span>
+                    <Eye className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-sm text-foreground">Afficher en ligne</span>
                   </div>
                   <button
                     onClick={() => setShowOnline(!showOnline)}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${showOnline ? 'bg-[#D1F550]' : 'bg-[#333333]'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${showOnline ? 'bg-primary' : 'bg-muted'}`}
                   >
                     <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${showOnline ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
@@ -294,28 +303,28 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
 
             {/* À propos section */}
             <div>
-              <h4 className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-3">À propos</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">À propos</h4>
               <div className="space-y-1">
                 <div className="flex items-center gap-3 p-3 rounded-xl">
-                  <Info className="w-5 h-5 text-[#A3A3A3]" />
-                  <span className="text-sm text-white">Version de l&apos;app</span>
-                  <span className="text-xs text-[#A3A3A3] ml-auto">1.0.0</span>
+                  <Info className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Version de l&apos;app</span>
+                  <span className="text-xs text-muted-foreground ml-auto">1.0.0</span>
                 </div>
                 <button
                   onClick={() => toast('Conditions d\'utilisation bientôt disponibles')}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
                 >
-                  <Info className="w-5 h-5 text-[#A3A3A3]" />
-                  <span className="text-sm text-white">Conditions d&apos;utilisation</span>
-                  <ChevronRight className="w-4 h-4 text-[#A3A3A3] ml-auto" />
+                  <Info className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Conditions d&apos;utilisation</span>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto" />
                 </button>
                 <button
                   onClick={() => toast('Politique de confidentialité bientôt disponible')}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#262626] transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
                 >
-                  <Shield className="w-5 h-5 text-[#A3A3A3]" />
-                  <span className="text-sm text-white">Politique de confidentialité</span>
-                  <ChevronRight className="w-4 h-4 text-[#A3A3A3] ml-auto" />
+                  <Shield className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Politique de confidentialité</span>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto" />
                 </button>
               </div>
             </div>
@@ -352,13 +361,13 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
         onClick={onClose}
       />
       <div className="fixed inset-x-0 top-1/2 left-1/2 z-[70] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[85vh] animate-scale-up">
-        <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[85vh]">
           {/* Header with close */}
-          <div className="flex items-center justify-between p-4 border-b border-[#333333]">
+          <div className="flex items-center justify-between p-4 border-b border-border">
             <CategoryBadge category={post.category} />
             <button
               onClick={onClose}
-              className="h-8 w-8 rounded-full bg-[#262626] flex items-center justify-center text-[#A3A3A3] hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -375,27 +384,27 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
                 className="object-cover"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
             </div>
 
             {/* Content */}
             <div className="p-4 -mt-8 relative">
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold bg-[#1A1A1A]/90 backdrop-blur-sm border-[#333333] text-[#A3A3A3]">
+                <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold bg-card/90 backdrop-blur-sm border-border text-muted-foreground">
                   <CatIcon className="h-3 w-3" />
                   {cat.label}
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold bg-[#1A1A1A]/90 backdrop-blur-sm border-[#333333] text-[#A3A3A3]">
+                <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold bg-card/90 backdrop-blur-sm border-border text-muted-foreground">
                   {post.mode}
                 </span>
               </div>
 
-              <h2 className="text-lg font-bold text-white mb-2">{post.title}</h2>
-              <p className="text-sm text-[#A3A3A3] leading-relaxed mb-3">{post.description}</p>
+              <h2 className="text-lg font-bold text-foreground mb-2">{post.title}</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">{post.description}</p>
 
               <div className="flex flex-wrap items-center gap-2.5 text-xs mb-3">
-                <span className="inline-flex items-center gap-1 text-[#A3A3A3]">
-                  <MapPin className="h-3.5 w-3.5 text-[#D1F550]" />
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5 text-primary" />
                   {post.location}
                 </span>
                 <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold ${
@@ -403,7 +412,7 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
                     ? 'bg-red-500/20 text-red-400'
                     : deadline.urgent
                       ? 'bg-red-500/20 text-red-400'
-                      : 'bg-[#262626] text-[#A3A3A3]'
+                      : 'bg-secondary text-muted-foreground'
                 }`}>
                   <Clock className="h-3 w-3" />
                   {deadline.text}
@@ -414,7 +423,7 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
                 href={post.externalLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#D1F550] px-4 py-2 text-sm font-semibold text-[#0A0A0A] hover:bg-[#c5e840] transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
                 Participer
@@ -423,30 +432,30 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
           </div>
 
           {/* Action bar */}
-          <div className="flex items-center justify-around p-3 border-t border-[#333333]">
+          <div className="flex items-center justify-around p-3 border-t border-border">
             <button
               onClick={() => {
                 setLiked(!liked)
                 setLikeCount((c) => (liked ? c - 1 : c + 1))
               }}
-              className="flex items-center gap-1.5 text-sm text-[#A3A3A3] hover:text-red-400 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-red-400 transition-colors"
             >
               <Heart className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : ''}`} />
               <span>{likeCount}</span>
             </button>
-            <button className="flex items-center gap-1.5 text-sm text-[#A3A3A3] hover:text-sky-400 transition-colors">
+            <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-sky-400 transition-colors">
               <MessageCircle className="w-5 h-5" />
               <span>{post.comments}</span>
             </button>
-            <button className="flex items-center gap-1.5 text-sm text-[#A3A3A3] hover:text-[#D1F550] transition-colors">
+            <button className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
               <Share2 className="w-5 h-5" />
               <span>{post.shares}</span>
             </button>
             <button
               onClick={() => setSaved(!saved)}
-              className="flex items-center gap-1.5 text-sm text-[#A3A3A3] hover:text-[#D1F550] transition-colors"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              <Bookmark className={`w-5 h-5 ${saved ? 'fill-[#D1F550] text-[#D1F550]' : ''}`} />
+              <Bookmark className={`w-5 h-5 ${saved ? 'fill-primary text-primary' : ''}`} />
               <span>{post.saves}</span>
             </button>
           </div>
@@ -471,15 +480,15 @@ function PostGridCard({ post, onClick }: { post: OppPost; onClick: () => void })
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         unoptimized
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-[#0A0A0A]/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
 
       {/* Content overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <CategoryBadge category={post.category} className="text-[9px] px-1.5 py-0.5 mb-1.5" />
-        <h4 className="text-xs font-semibold text-white line-clamp-2 leading-snug">
+        <h4 className="text-xs font-semibold text-foreground line-clamp-2 leading-snug">
           {post.title}
         </h4>
-        <div className="flex items-center gap-2 mt-1.5 text-[#A3A3A3]">
+        <div className="flex items-center gap-2 mt-1.5 text-muted-foreground">
           <span className="inline-flex items-center gap-0.5 text-[10px]">
             <Heart className="w-3 h-3" /> {post.likes}
           </span>
@@ -506,14 +515,14 @@ export default function ProfileScreen() {
   const selectedPost = showPostDetail ? mockPosts.find((p) => p.id === showPostDetail) : null
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-background">
       {/* Cover Photo Gradient */}
       <div className="relative h-36 bg-gradient-to-br from-[#D1F550]/30 via-[#22C55E]/20 to-[#D1F550]/10 overflow-hidden">
         {/* Decorative pattern */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-4 left-8 w-16 h-16 rounded-full border border-[#D1F550]/30" />
-          <div className="absolute bottom-4 right-12 w-24 h-24 rounded-full border border-[#D1F550]/20" />
-          <div className="absolute top-8 right-6 w-8 h-8 rounded-full bg-[#D1F550]/10" />
+          <div className="absolute top-4 left-8 w-16 h-16 rounded-full border border-primary/30" />
+          <div className="absolute bottom-4 right-12 w-24 h-24 rounded-full border border-primary/20" />
+          <div className="absolute top-8 right-6 w-8 h-8 rounded-full bg-primary/10" />
         </div>
 
         {/* Settings button - top right */}
@@ -521,7 +530,7 @@ export default function ProfileScreen() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 bg-[#0A0A0A]/50 backdrop-blur-sm text-white hover:bg-[#0A0A0A]/70 rounded-full"
+            className="h-9 w-9 bg-background/50 backdrop-blur-sm text-foreground hover:bg-background/70 rounded-full"
             onClick={() => setShowSettings(true)}
           >
             <Settings className="w-5 h-5" />
@@ -533,7 +542,7 @@ export default function ProfileScreen() {
       <div className="px-4 -mt-14 relative z-10">
         {/* Avatar with verified badge */}
         <div className="relative inline-block mb-3">
-          <div className="h-24 w-24 rounded-full overflow-hidden ring-4 ring-[#0A0A0A] ring-offset-0">
+          <div className="h-24 w-24 rounded-full overflow-hidden ring-4 ring-background ring-offset-0">
             <Image
               src={currentUser.avatar}
               alt={currentUser.name}
@@ -544,30 +553,30 @@ export default function ProfileScreen() {
             />
           </div>
           {currentUser.verified && (
-            <span className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-[#D1F550] w-7 h-7">
-              <BadgeCheck className="w-5 h-5 text-[#0A0A0A]" strokeWidth={3} />
+            <span className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-primary w-7 h-7">
+              <BadgeCheck className="w-5 h-5 text-primary-foreground" strokeWidth={3} />
             </span>
           )}
         </div>
 
         {/* Name, username, bio */}
         <div className="mb-4">
-          <h1 className="text-xl font-bold text-white">{currentUser.name}</h1>
-          <p className="text-sm text-[#A3A3A3] mb-2">@{currentUser.name.toLowerCase().replace(/\s/g, '_')}</p>
-          <p className="text-sm text-[#A3A3A3] leading-relaxed">
+          <h1 className="text-xl font-bold text-foreground">{currentUser.name}</h1>
+          <p className="text-sm text-muted-foreground mb-2">@{currentUser.name.toLowerCase().replace(/\s/g, '_')}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Étudiante passionnée par les opportunités africaines 🌍 | Tech & Innovation | Dakar 🇸🇳
           </p>
         </div>
 
         {/* Location + Website */}
-        <div className="flex items-center gap-3 mb-4 text-xs text-[#A3A3A3]">
+        <div className="flex items-center gap-3 mb-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-[#D1F550]" />
+            <MapPin className="w-3.5 h-3.5 text-primary" />
             Dakar, Sénégal
           </span>
           <span className="flex items-center gap-1">
-            <LinkIcon className="w-3.5 h-3.5 text-[#D1F550]" />
-            <a href="#" className="text-[#D1F550] hover:underline">oppy.sn/amina</a>
+            <LinkIcon className="w-3.5 h-3.5 text-primary" />
+            <a href="#" className="text-primary hover:underline">oppy.sn/amina</a>
           </span>
         </div>
 
@@ -576,12 +585,12 @@ export default function ProfileScreen() {
           {STATS.map((stat) => (
             <div
               key={stat.label}
-              className="bg-[#1A1A1A] rounded-xl p-3 text-center border border-[#333333]"
+              className="bg-card rounded-xl p-3 text-center border border-border"
             >
-              <div className="text-base font-bold text-[#D1F550]">
+              <div className="text-base font-bold text-primary">
                 {stat.value >= 1000 ? `${(stat.value / 1000).toFixed(1)}k` : stat.value}
               </div>
-              <div className="text-[10px] text-[#A3A3A3] mt-0.5">{stat.label}</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -589,7 +598,7 @@ export default function ProfileScreen() {
         {/* Edit Profile + Share Profile buttons */}
         <div className="flex gap-2 mb-4">
           <Button
-            className="flex-1 bg-[#D1F550] text-[#0A0A0A] hover:bg-[#B8D940] font-semibold rounded-xl h-10 text-sm gap-1.5"
+            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-xl h-10 text-sm gap-1.5"
             onClick={() => setShowEditProfile(true)}
           >
             <Edit3 className="w-4 h-4" />
@@ -597,7 +606,7 @@ export default function ProfileScreen() {
           </Button>
           <Button
             variant="outline"
-            className="flex-1 border-[#333333] text-white hover:bg-[#262626] hover:border-[#D1F550]/30 rounded-xl h-10 text-sm gap-1.5"
+            className="flex-1 border-border text-foreground hover:bg-secondary hover:border-primary/30 rounded-xl h-10 text-sm gap-1.5"
             onClick={() => {
               navigator.clipboard.writeText(window.location.href)
               toast('Lien de profil copié ! 🔗')
@@ -612,24 +621,24 @@ export default function ProfileScreen() {
       {/* Content Tabs */}
       <div className="px-4 pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full bg-[#1A1A1A] border border-[#333333] rounded-xl h-10 p-1">
+          <TabsList className="w-full bg-card border border-border rounded-xl h-10 p-1">
             <TabsTrigger
               value="publications"
-              className="flex-1 rounded-lg text-xs data-[state=active]:bg-[#D1F550] data-[state=active]:text-[#0A0A0A] data-[state=active]:font-semibold gap-1"
+              className="flex-1 rounded-lg text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:font-semibold gap-1"
             >
               <Grid3X3 className="w-3.5 h-3.5" />
               Publications
             </TabsTrigger>
             <TabsTrigger
               value="saved"
-              className="flex-1 rounded-lg text-xs data-[state=active]:bg-[#D1F550] data-[state=active]:text-[#0A0A0A] data-[state=active]:font-semibold gap-1"
+              className="flex-1 rounded-lg text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:font-semibold gap-1"
             >
               <Bookmark className="w-3.5 h-3.5" />
               Sauvegardés
             </TabsTrigger>
             <TabsTrigger
               value="liked"
-              className="flex-1 rounded-lg text-xs data-[state=active]:bg-[#D1F550] data-[state=active]:text-[#0A0A0A] data-[state=active]:font-semibold gap-1"
+              className="flex-1 rounded-lg text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:font-semibold gap-1"
             >
               <Heart className="w-3.5 h-3.5" />
               Aimés
@@ -665,8 +674,8 @@ export default function ProfileScreen() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Bookmark className="w-10 h-10 text-[#333333] mx-auto mb-2" />
-                <p className="text-[#A3A3A3] text-sm">Aucune opportunité sauvegardée</p>
+                <Bookmark className="w-10 h-10 text-muted-foreground/60 mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">Aucune opportunité sauvegardée</p>
               </div>
             )}
           </TabsContent>
@@ -686,8 +695,8 @@ export default function ProfileScreen() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Heart className="w-10 h-10 text-[#333333] mx-auto mb-2" />
-                <p className="text-[#A3A3A3] text-sm">Aucune opportunité aimée</p>
+                <Heart className="w-10 h-10 text-muted-foreground/60 mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">Aucune opportunité aimée</p>
               </div>
             )}
           </TabsContent>
@@ -697,14 +706,14 @@ export default function ProfileScreen() {
       {/* Settings link at bottom */}
       <div className="px-4 pb-20">
         <button
-          className="w-full flex items-center justify-between p-4 bg-[#1A1A1A] rounded-xl border border-[#333333] hover:border-[#D1F550]/30 transition-colors"
+          className="w-full flex items-center justify-between p-4 bg-card rounded-xl border border-border hover:border-primary/30 transition-colors"
           onClick={() => setShowSettings(true)}
         >
           <div className="flex items-center gap-3">
-            <Settings className="w-5 h-5 text-[#A3A3A3]" />
-            <span className="text-sm text-white font-medium">Paramètres</span>
+            <Settings className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm text-foreground font-medium">Paramètres</span>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#A3A3A3]" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </button>
       </div>
 
