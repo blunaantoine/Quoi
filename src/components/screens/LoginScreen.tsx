@@ -647,12 +647,12 @@ export default function LoginScreen() {
 
   // ─── Login Form ──────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#C8E84D] flex flex-col">
       {/* Header */}
       <div className="px-4 pt-4 pb-2">
         <button
           onClick={() => setAuthView('landing')}
-          className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          className="h-10 w-10 rounded-full bg-black/10 flex items-center justify-center text-black/60 hover:text-black hover:bg-black/20 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -662,10 +662,10 @@ export default function LoginScreen() {
       <div className="flex-1 px-6 py-8">
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-foreground mb-2">
+          <h1 className="text-3xl font-extrabold text-black mb-2">
             Bon retour
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-black/60 text-sm leading-relaxed">
             Connectez-vous pour découvrir les meilleures opportunités
           </p>
         </div>
@@ -673,40 +673,40 @@ export default function LoginScreen() {
         {/* Form */}
         <div className="space-y-4 mb-6">
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Adresse email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="votre@email.com"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
                 onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Mot de passe
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 pr-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 pr-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
                 onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
@@ -717,7 +717,7 @@ export default function LoginScreen() {
           <div className="text-right">
             <button
               onClick={() => setShowForgotPassword(true)}
-              className="text-xs text-primary hover:underline font-medium"
+              className="text-xs text-black/60 hover:text-black hover:underline font-medium"
             >
               Mot de passe oublié ?
             </button>
@@ -725,10 +725,10 @@ export default function LoginScreen() {
         </div>
 
         {/* Login Button */}
-        <Button
+        <button
           onClick={handleLogin}
           disabled={isLoading}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-2xl h-12 text-base gap-2 lime-glow disabled:opacity-50"
+          className="w-full flex items-center justify-center bg-black text-white rounded-2xl h-13 px-6 shadow-md hover:bg-gray-900 transition-all active:scale-[0.98] font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed gap-2"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
@@ -741,31 +741,30 @@ export default function LoginScreen() {
               Se connecter
             </>
           )}
-        </Button>
+        </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground font-medium">ou</span>
-          <div className="flex-1 h-px bg-border" />
+          <div className="flex-1 h-px bg-black/15" />
+          <span className="text-xs text-black/40 font-medium">ou</span>
+          <div className="flex-1 h-px bg-black/15" />
         </div>
 
         {/* Demo Login */}
-        <Button
+        <button
           onClick={handleDemoLogin}
-          variant="outline"
-          className="w-full border-border text-foreground hover:bg-secondary hover:border-primary/30 font-semibold rounded-2xl h-11 text-sm"
+          className="w-full flex items-center justify-center bg-transparent border-2 border-black text-black rounded-2xl h-13 px-6 hover:bg-black/5 transition-all active:scale-[0.98] font-semibold text-sm"
         >
           Essayer en mode démo
-        </Button>
+        </button>
 
         {/* Sign up link */}
         <div className="text-center mt-8">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-black/60">
             Pas encore de compte ?{' '}
             <button
               onClick={() => setAuthView('signup')}
-              className="text-primary hover:underline font-semibold"
+              className="text-black hover:underline font-semibold"
             >
               Créer un compte
             </button>

@@ -16,7 +16,6 @@ import {
   Copy,
   RefreshCw,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppStore } from '@/lib/store'
 import { toast } from 'sonner'
@@ -69,7 +68,7 @@ function OtpInput({ length = 6, onComplete }: { length?: number; onComplete: (co
           value={values[i]}
           onChange={(e) => handleChange(i, e.target.value)}
           onKeyDown={(e) => handleKeyDown(i, e)}
-          className="w-11 h-13 rounded-xl bg-card border border-border text-center text-lg font-bold text-foreground focus:border-primary/60 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+          className="w-11 h-13 rounded-xl bg-white/80 border border-black/10 text-center text-lg font-bold text-black focus:border-black/30 focus:ring-1 focus:ring-black/10 outline-none transition-all"
           autoFocus={i === 0}
         />
       ))}
@@ -288,7 +287,7 @@ export default function SignupScreen() {
   // ─── OTP Verification Step ──────────────────────────────────────
   if (showOtpVerification) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-[#C8E84D] flex flex-col">
         {/* Header */}
         <div className="px-4 pt-4 pb-2">
           <button
@@ -296,7 +295,7 @@ export default function SignupScreen() {
               setShowOtpVerification(false)
               setSimulatedCode(null)
             }}
-            className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            className="h-10 w-10 rounded-full bg-black/10 flex items-center justify-center text-black/60 hover:text-black hover:bg-black/20 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -305,14 +304,14 @@ export default function SignupScreen() {
         {/* Content */}
         <div className="flex-1 px-6 py-8">
           <div className="mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <ShieldCheck className="w-7 h-7 text-primary" />
+            <div className="w-14 h-14 rounded-2xl bg-black/10 flex items-center justify-center mb-4">
+              <ShieldCheck className="w-7 h-7 text-black/70" />
             </div>
-            <h1 className="text-3xl font-extrabold text-foreground mb-2">
+            <h1 className="text-3xl font-extrabold text-black mb-2">
               Vérification email
             </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Entrez le code à 6 chiffres envoyé à <span className="text-foreground font-medium">{email}</span>
+            <p className="text-black/60 text-sm leading-relaxed">
+              Entrez le code à 6 chiffres envoyé à <span className="text-black font-medium">{email}</span>
             </p>
           </div>
 
@@ -346,7 +345,7 @@ export default function SignupScreen() {
 
           {isVerifying && (
             <div className="flex justify-center py-3">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <Loader2 className="w-6 h-6 animate-spin text-black" />
             </div>
           )}
 
@@ -355,7 +354,7 @@ export default function SignupScreen() {
             <button
               onClick={handleResendOtp}
               disabled={countdown > 0 || isVerifying}
-              className="text-sm text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+              className="text-sm text-black hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               {countdown > 0 ? `Renvoyer le code dans ${countdown}s` : 'Renvoyer le code'}
@@ -364,22 +363,21 @@ export default function SignupScreen() {
 
           {/* Separator */}
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground font-medium">ou</span>
-            <div className="flex-1 h-px bg-border" />
+            <div className="flex-1 h-px bg-black/10" />
+            <span className="text-xs text-black/40 font-medium">ou</span>
+            <div className="flex-1 h-px bg-black/10" />
           </div>
 
           {/* Skip verification (demo) */}
-          <Button
+          <button
             onClick={() => {
               toast('Connexion démo activée')
               setLoggedIn(true)
             }}
-            variant="outline"
-            className="w-full border-border text-foreground hover:bg-secondary hover:border-primary/30 font-semibold rounded-2xl h-11 text-sm"
+            className="w-full bg-transparent border-2 border-black text-black rounded-2xl h-11 font-semibold text-sm hover:bg-black/5 transition-colors"
           >
             Passer en mode démo
-          </Button>
+          </button>
         </div>
       </div>
     )
@@ -387,12 +385,12 @@ export default function SignupScreen() {
 
   // ─── Signup Form ──────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#C8E84D] flex flex-col">
       {/* Header */}
       <div className="px-4 pt-4 pb-2">
         <button
           onClick={() => setAuthView('landing')}
-          className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          className="h-10 w-10 rounded-full bg-black/10 flex items-center justify-center text-black/60 hover:text-black hover:bg-black/20 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -402,10 +400,10 @@ export default function SignupScreen() {
       <div className="flex-1 px-6 py-6 overflow-y-auto pb-8">
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-3xl font-extrabold text-foreground mb-2">
+          <h1 className="text-3xl font-extrabold text-black mb-2">
             Rejoignez-nous
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-black/60 text-sm leading-relaxed">
             Créez votre compte et accédez à des milliers d&apos;opportunités
           </p>
         </div>
@@ -414,78 +412,78 @@ export default function SignupScreen() {
         <div className="space-y-4 mb-6">
           {/* Display Name */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Nom complet
             </label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Marie Dupont"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
               />
             </div>
           </div>
 
           {/* Username */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Nom d&apos;utilisateur
             </label>
             <div className="relative">
-              <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                 placeholder="marie_dupont"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
               />
             </div>
             {username && (
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Votre profil : oqui.app/{username}
+              <p className="text-[11px] text-black/40 mt-1">
+                Votre profil : quoi.app/{username}
               </p>
             )}
           </div>
 
           {/* Email */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Adresse email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="votre@email.com"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
               />
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Mot de passe
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 pr-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 pr-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
@@ -498,13 +496,13 @@ export default function SignupScreen() {
                     <div
                       key={i}
                       className={`h-1.5 flex-1 rounded-full transition-colors ${
-                        i <= strength.level ? strength.color : 'bg-muted'
+                        i <= strength.level ? strength.color : 'bg-black/10'
                       }`}
                     />
                   ))}
                 </div>
-                <p className="text-[11px] text-muted-foreground">
-                  Force : <span className="font-medium">{strength.text}</span>
+                <p className="text-[11px] text-black/40">
+                  Force : <span className="font-medium text-black/60">{strength.text}</span>
                 </p>
               </div>
             )}
@@ -512,17 +510,17 @@ export default function SignupScreen() {
 
           {/* Confirm Password */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+            <label className="text-xs font-medium text-black/50 mb-1.5 block">
               Confirmer le mot de passe
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-black/40" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-card border-border text-foreground placeholder:text-muted-foreground rounded-xl h-12 pl-11 focus:border-primary/60"
+                className="bg-white/80 border-black/10 text-black placeholder:text-black/40 rounded-xl h-12 pl-11 focus:border-black/30 focus:ring-1 focus:ring-black/10"
               />
               {confirmPassword && (
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
@@ -545,26 +543,26 @@ export default function SignupScreen() {
             <div
               className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all mt-0.5 ${
                 acceptTerms
-                  ? 'bg-primary border-primary'
-                  : 'border-border bg-card'
+                  ? 'bg-black border-black'
+                  : 'border-black/30 bg-white/50'
               }`}
             >
-              {acceptTerms && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
+              {acceptTerms && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs text-black/60 leading-relaxed">
               J&apos;accepte les{' '}
-              <span className="text-primary font-medium">Conditions d&apos;utilisation</span>{' '}
+              <span className="text-black font-medium">Conditions d&apos;utilisation</span>{' '}
               et la{' '}
-              <span className="text-primary font-medium">Politique de confidentialité</span>
+              <span className="text-black font-medium">Politique de confidentialité</span>
             </p>
           </button>
         </div>
 
         {/* Signup Button */}
-        <Button
+        <button
           onClick={handleSignup}
           disabled={isLoading || !acceptTerms}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-2xl h-12 text-base gap-2 lime-glow disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-black text-white rounded-2xl h-13 shadow-md hover:bg-gray-900 font-bold text-base gap-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
@@ -577,15 +575,15 @@ export default function SignupScreen() {
               Créer mon compte
             </>
           )}
-        </Button>
+        </button>
 
         {/* Login link */}
         <div className="text-center mt-6">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-black/60">
             Déjà un compte ?{' '}
             <button
               onClick={() => setAuthView('login')}
-              className="text-primary hover:underline font-semibold"
+              className="text-black hover:underline font-semibold"
             >
               Se connecter
             </button>
