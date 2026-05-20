@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Users, Globe, TrendingUp, Sparkles, ArrowRight } from 'lucide-react'
+import { Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/lib/store'
 
@@ -22,18 +22,18 @@ export default function LandingScreen() {
         </div>
 
         {/* Logo & Title */}
-        <div className="relative z-10 text-center mb-8 animate-fade-slide-in">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-primary/10 mb-6 animate-pulse-lime overflow-hidden">
+        <div className="relative z-10 text-center mb-12 animate-fade-slide-in">
+          <div className="inline-flex items-center justify-center w-32 h-32 mb-8 animate-pulse-lime">
             <Image
-              src="/android-chrome-192x192.png"
+              src="/oqui-logo.png"
               alt="OQUI Logo"
-              width={96}
-              height={96}
-              className="w-full h-full object-contain"
+              width={128}
+              height={128}
+              className="w-full h-full object-contain drop-shadow-[0_0_24px_rgba(209,245,80,0.3)]"
               priority
             />
           </div>
-          <h1 className="text-4xl font-extrabold text-foreground mb-2">
+          <h1 className="text-4xl font-extrabold text-foreground mb-3">
             O<span className="gradient-text">QUI</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-xs mx-auto leading-relaxed">
@@ -41,46 +41,8 @@ export default function LandingScreen() {
           </p>
         </div>
 
-        {/* Feature cards */}
-        <div className="relative z-10 w-full max-w-sm space-y-3 mb-10">
-          {[
-            {
-              icon: TrendingUp,
-              title: 'Opportunités',
-              desc: 'Bourses, emplois, concours, événements',
-              color: 'text-green-500',
-            },
-            {
-              icon: Users,
-              title: 'Communauté',
-              desc: 'Connectez-vous avec des jeunes ambitieux',
-              color: 'text-primary',
-            },
-            {
-              icon: Globe,
-              title: 'International',
-              desc: 'Opportunités en Afrique et dans le monde',
-              color: 'text-sky-500',
-            },
-          ].map((feature, i) => (
-            <div
-              key={feature.title}
-              className="flex items-center gap-4 bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 animate-fade-slide-in"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
-                <feature.icon className={`w-5 h-5 ${feature.color}`} />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">{feature.title}</h3>
-                <p className="text-xs text-muted-foreground">{feature.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* CTA Buttons */}
-        <div className="relative z-10 w-full max-w-sm space-y-3 animate-fade-slide-in" style={{ animationDelay: '300ms' }}>
+        <div className="relative z-10 w-full max-w-sm space-y-3 animate-fade-slide-in" style={{ animationDelay: '200ms' }}>
           <Button
             onClick={() => setAuthView('signup')}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-2xl h-13 text-base gap-2 lime-glow"
@@ -99,7 +61,7 @@ export default function LandingScreen() {
         </div>
 
         {/* Terms */}
-        <p className="relative z-10 text-[11px] text-muted-foreground text-center mt-6 max-w-xs leading-relaxed">
+        <p className="relative z-10 text-[11px] text-muted-foreground text-center mt-8 max-w-xs leading-relaxed">
           En continuant, vous acceptez nos{' '}
           <span className="text-primary cursor-pointer hover:underline">Conditions d&apos;utilisation</span>{' '}
           et notre{' '}
@@ -109,8 +71,8 @@ export default function LandingScreen() {
 
       {/* Bottom decoration */}
       <div className="px-6 pb-8 pt-4">
-        <div className="flex items-center justify-center gap-1.5 text-muted-foreground/60">
-          <Image src="/favicon-32x32.png" alt="OQUI" width={14} height={14} />
+        <div className="flex items-center justify-center gap-2 text-muted-foreground/60">
+          <Image src="/oqui-logo.png" alt="OQUI" width={16} height={16} className="opacity-60" />
           <span className="text-xs font-medium">OQUI — L&apos;avenir vous attend</span>
         </div>
       </div>
