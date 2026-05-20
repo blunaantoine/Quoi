@@ -89,3 +89,20 @@ Stage Summary:
 - Fixed forgot-password flow: OTP is no longer prematurely consumed, allowing the reset step to verify and consume it properly
 - Email validation prevents users from entering fake email domains (example.com etc.) with immediate frontend feedback and backend enforcement
 - Decorative emoji removed from UI; emojis in user content (bio, messages, descriptions) are preserved
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix preview not showing - server persistence issue
+
+Work Log:
+- Diagnosed that Next.js dev server was crashing immediately after starting, causing Caddy to return 502
+- Root cause: `nohup` and `setsid` approaches didn't work because child processes were being killed when parent shell terminated
+- Created Python double-fork daemon (`daemon.py`) that properly detaches from terminal and auto-restarts Next.js if it crashes
+- Verified both port 3000 (direct) and port 81 (Caddy gateway) return HTTP 200
+- Server is now running persistently with auto-restart capability
+
+Stage Summary:
+- Preview is now accessible via the Preview Panel
+- Server runs as a proper daemon with auto-restart
+- Both ports 3000 and 81 are responding correctly
