@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import {
   Home,
@@ -10,15 +11,58 @@ import {
 } from 'lucide-react'
 import { useAppStore, TabType } from '@/lib/store'
 
-// Dynamic imports for all screen components to reduce initial bundle size
-const LandingScreen = dynamic(() => import('@/components/screens/LandingScreen'), { ssr: false })
-const LoginScreen = dynamic(() => import('@/components/screens/LoginScreen'), { ssr: false })
-const SignupScreen = dynamic(() => import('@/components/screens/SignupScreen'), { ssr: false })
-const HomeScreen = dynamic(() => import('@/components/screens/HomeScreen'), { ssr: false })
-const NewsScreen = dynamic(() => import('@/components/screens/NewsScreen'), { ssr: false })
-const AddScreen = dynamic(() => import('@/components/screens/AddScreen'), { ssr: false })
-const MessagesScreen = dynamic(() => import('@/components/screens/MessagesScreen'), { ssr: false })
-const ProfileScreen = dynamic(() => import('@/components/screens/ProfileScreen'), { ssr: false })
+// Dynamic imports with splash loading screen
+function SplashLoader() {
+  return (
+    <div className="fixed inset-0 z-[100] bg-[#C8E84D] flex flex-col items-center justify-center">
+      <div className="animate-scale-in">
+        <img
+          src="/oqui-splash-logo.png"
+          alt="OQUI"
+          width={140}
+          height={140}
+          className="object-contain"
+        />
+      </div>
+      <div className="mt-10">
+        <div className="w-8 h-8 rounded-full border-[3px] border-black/20 border-t-black animate-spin" />
+      </div>
+    </div>
+  )
+}
+
+const LandingScreen = dynamic(() => import('@/components/screens/LandingScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const LoginScreen = dynamic(() => import('@/components/screens/LoginScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const SignupScreen = dynamic(() => import('@/components/screens/SignupScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const HomeScreen = dynamic(() => import('@/components/screens/HomeScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const NewsScreen = dynamic(() => import('@/components/screens/NewsScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const AddScreen = dynamic(() => import('@/components/screens/AddScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const MessagesScreen = dynamic(() => import('@/components/screens/MessagesScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
+const ProfileScreen = dynamic(() => import('@/components/screens/ProfileScreen'), {
+  ssr: false,
+  loading: () => <SplashLoader />,
+})
 const NotificationsPanel = dynamic(
   () => import('@/components/oppy/notifications-panel').then((mod) => ({ default: mod.NotificationsPanel })),
   { ssr: false }
@@ -165,12 +209,42 @@ function ScreenRenderer() {
 
 export default function OquiHome() {
   const { isLoggedIn } = useAppStore()
+  const [showSplash, setShowSplash] = useState(true)
+
+  // Show splash screen for a minimum duration then fade out
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false)
+    }, 1800)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Splash screen with #C8E84D background, logo, and loading spinner
+  if (showSplash) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-[#C8E84D] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div className="animate-scale-in">
+          <img
+            src="/oqui-splash-logo.png"
+            alt="OQUI"
+            width={140}
+            height={140}
+            className="object-contain"
+          />
+        </div>
+        <div className="mt-10">
+          <div className="w-8 h-8 rounded-full border-[3px] border-black/20 border-t-black animate-spin" />
+        </div>
+      </div>
+    )
+  }
 
   // Show auth flow if not logged in
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="mx-auto max-w-lg min-h-screen relative bg-background shadow-2xl shadow-black/50">
+      <div className="min-h-screen bg-[#C8E84D]">
+        <div className="mx-auto max-w-lg min-h-screen relative bg-[#C8E84D] shadow-2xl shadow-black/50">
           <AuthFlow />
         </div>
       </div>

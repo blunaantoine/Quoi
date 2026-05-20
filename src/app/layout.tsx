@@ -60,6 +60,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        style={{ backgroundColor: '#C8E84D' }}
       >
         <ThemeProvider
           attribute="class"
