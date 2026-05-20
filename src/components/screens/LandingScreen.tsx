@@ -14,7 +14,7 @@ export default function LandingScreen() {
         <div className="w-36 h-36 rounded-3xl bg-[#D4F26A] flex items-center justify-center mb-4 shadow-sm">
           <Image
             src="/oqui-logo.png"
-            alt="Quoi Logo"
+            alt="OQUI Logo"
             width={120}
             height={120}
             className="object-contain"
@@ -23,11 +23,8 @@ export default function LandingScreen() {
         </div>
 
         {/* Brand text */}
-        <p className="text-sm font-semibold text-black/60 tracking-[0.3em] uppercase mb-1">
-          WHAT
-        </p>
         <h1 className="text-4xl font-black text-black tracking-tight">
-          Quoi
+          OQUI
         </h1>
       </div>
 

@@ -444,7 +444,7 @@ export default function SignupScreen() {
             </div>
             {username && (
               <p className="text-[11px] text-black/40 mt-1">
-                Votre profil : quoi.app/{username}
+                Votre profil : oqui.app/{username}
               </p>
             )}
           </div>
