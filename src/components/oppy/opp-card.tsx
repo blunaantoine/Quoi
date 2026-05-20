@@ -102,43 +102,22 @@ export function OppCard({ post, className }: OppCardProps) {
   return (
     <div
       className={cn(
-        'relative h-full w-full select-none overflow-hidden bg-background',
+        'relative h-full w-full select-none overflow-y-auto bg-background',
         className
       )}
       onClick={handleTap}
     >
-      {/* ── Flyer background ── */}
-      <Image
-        src={post.flyer}
-        alt={post.title}
-        fill
-        className="object-cover"
-        priority
-        unoptimized
-      />
-
-      {/* ── Gradient overlay ── */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-
-      {/* ── Top bar: tags ── */}
-      <div className="absolute left-4 right-16 top-4 z-10 flex flex-wrap gap-2">
-        {post.tags.map((tag) => {
-          const cfg = tagConfig[tag];
-          const TagIcon = cfg.icon;
-          return (
-            <span
-              key={tag}
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold',
-                cfg.color,
-                cfg.textColor
-              )}
-            >
-              <TagIcon className="h-3 w-3" />
-              {tag}
-            </span>
-          );
-        })}
+      {/* ── Flyer image — full size, no crop ── */}
+      <div className="relative w-full" style={{ minHeight: '50vh' }}>
+        <Image
+          src={post.flyer}
+          alt={post.title}
+          width={800}
+          height={1200}
+          className="w-full h-auto object-contain"
+          priority
+          unoptimized
+        />
       </div>
 
       {/* ── Double-tap heart animation (CSS) ── */}
@@ -148,80 +127,82 @@ export function OppCard({ post, className }: OppCardProps) {
         </div>
       )}
 
-      {/* ── Bottom content ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pb-6">
-        <div className="flex gap-3">
-          {/* Left: text content */}
-          <div className="flex-1 min-w-0">
-            {/* Category + Mode row */}
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <CategoryBadge category={post.category} />
+      {/* ── Info panel below flyer ── */}
+      <div className="relative z-10 bg-background border-t border-border/50">
+        {/* Top row: tags */}
+        <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
+          {post.tags.map((tag) => {
+            const cfg = tagConfig[tag];
+            const TagIcon = cfg.icon;
+            return (
               <span
+                key={tag}
                 className={cn(
-                  'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold',
-                  modeStyles[post.mode]
+                  'inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold',
+                  cfg.color,
+                  cfg.textColor
                 )}
               >
-                {post.mode}
+                <TagIcon className="h-3 w-3" />
+                {tag}
               </span>
-            </div>
+            );
+          })}
+        </div>
 
-            {/* Title */}
-            <h2 className="mb-1 text-lg font-bold leading-snug text-white line-clamp-2">
-              {post.title}
-            </h2>
+        {/* Title */}
+        <h2 className="px-4 pt-2 text-lg font-bold leading-snug text-foreground line-clamp-2">
+          {post.title}
+        </h2>
 
-            {/* Description */}
-            <p className="mb-3 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-              {post.description}
-            </p>
+        {/* Description */}
+        <p className="px-4 pt-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+          {post.description}
+        </p>
 
-            {/* Location + Deadline + External link */}
-            <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs">
-              <span className="inline-flex items-center gap-1 text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
-                {post.location}
-              </span>
+        {/* Category + Mode + Location + Deadline */}
+        <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
+          <CategoryBadge category={post.category} />
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold',
+              modeStyles[post.mode]
+            )}
+          >
+            {post.mode}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="h-3.5 w-3.5" />
+            {post.location}
+          </span>
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold',
+              deadline.urgent
+                ? 'bg-red-500/20 text-red-400'
+                : 'bg-secondary text-muted-foreground'
+            )}
+          >
+            <Clock className="h-3 w-3" />
+            {deadline.text}
+          </span>
+        </div>
 
-              <span
-                className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold',
-                  deadline.urgent
-                    ? 'bg-red-500/20 text-red-400'
-                    : 'bg-secondary text-muted-foreground'
-                )}
-              >
-                <Clock className="h-3 w-3" />
-                {deadline.text}
-              </span>
-            </div>
-
-            <a
-              href={post.externalLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Voir l&apos;opportunité
-            </a>
-
-            {/* Author row */}
-            <div className="mt-3 flex items-center gap-2">
-              <UserAvatar user={post.author} size="sm" />
-              <span className="text-sm font-medium text-white">
-                {post.author.name}
-              </span>
-              {post.author.verified && (
-                <VerifiedBadge size="sm" />
-              )}
-            </div>
+        {/* Author + Action buttons row */}
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Author */}
+          <div className="flex items-center gap-2 min-w-0">
+            <UserAvatar user={post.author} size="sm" />
+            <span className="text-sm font-medium text-foreground truncate">
+              {post.author.name}
+            </span>
+            {post.author.verified && (
+              <VerifiedBadge size="sm" />
+            )}
           </div>
 
-          {/* Right: action bar */}
-          <div className="flex flex-col items-center gap-4 pt-2">
-            {/* Like */}
+          {/* Action buttons */}
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={toggleLike}
@@ -230,42 +211,39 @@ export function OppCard({ post, className }: OppCardProps) {
             >
               <Heart
                 className={cn(
-                  'h-7 w-7 transition-colors',
-                  liked ? 'fill-red-500 text-red-500' : 'text-white'
+                  'h-6 w-6 transition-colors',
+                  liked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-xs font-semibold text-white">
+              <span className="text-[10px] font-semibold text-muted-foreground">
                 {likeCount}
               </span>
             </button>
 
-            {/* Comment */}
             <button
               type="button"
               onClick={(e) => e.stopPropagation()}
               className="flex flex-col items-center gap-0.5"
               aria-label="Commenter"
             >
-              <MessageCircle className="h-7 w-7 text-white" />
-              <span className="text-xs font-semibold text-white">
+              <MessageCircle className="h-6 w-6 text-muted-foreground" />
+              <span className="text-[10px] font-semibold text-muted-foreground">
                 {post.comments}
               </span>
             </button>
 
-            {/* Share */}
             <button
               type="button"
               onClick={(e) => e.stopPropagation()}
               className="flex flex-col items-center gap-0.5"
               aria-label="Partager"
             >
-              <Share2 className="h-7 w-7 text-white" />
-              <span className="text-xs font-semibold text-white">
+              <Share2 className="h-6 w-6 text-muted-foreground" />
+              <span className="text-[10px] font-semibold text-muted-foreground">
                 {post.shares}
               </span>
             </button>
 
-            {/* Save */}
             <button
               type="button"
               onClick={toggleSave}
@@ -274,15 +252,29 @@ export function OppCard({ post, className }: OppCardProps) {
             >
               <Bookmark
                 className={cn(
-                  'h-7 w-7 transition-colors',
-                  saved ? 'fill-primary text-primary' : 'text-white'
+                  'h-6 w-6 transition-colors',
+                  saved ? 'fill-primary text-primary' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-xs font-semibold text-white">
+              <span className="text-[10px] font-semibold text-muted-foreground">
                 {post.saves}
               </span>
             </button>
           </div>
+        </div>
+
+        {/* CTA button */}
+        <div className="px-4 pb-4">
+          <a
+            href={post.externalLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Voir l&apos;opportunité
+          </a>
         </div>
       </div>
     </div>

@@ -383,20 +383,20 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto">
-            {/* Flyer image */}
-            <div className="relative h-56 w-full">
+            {/* Flyer image — full size, no crop */}
+            <div className="relative w-full">
               <Image
                 src={post.flyer}
                 alt={post.title}
-                fill
-                className="object-cover"
+                width={800}
+                height={1200}
+                className="w-full h-auto object-contain"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
             </div>
 
             {/* Content */}
-            <div className="p-4 -mt-8 relative">
+            <div className="p-4 relative border-t border-border/50">
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold bg-card/90 backdrop-blur-sm border-border text-muted-foreground">
                   <CatIcon className="h-3 w-3" />
@@ -484,25 +484,25 @@ function PostDetailModal({ post, onClose }: { post: OppPost; onClose: () => void
 function PostGridCard({ post, onClick }: { post: OppPost; onClick: () => void }) {
   return (
     <div
-      className="relative aspect-[3/4] rounded-xl overflow-hidden group cursor-pointer"
+      className="relative rounded-xl overflow-hidden group cursor-pointer bg-background border border-border/50"
       onClick={onClick}
     >
       <Image
         src={post.flyer}
         alt={post.title}
-        fill
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        width={800}
+        height={1200}
+        className="w-full h-auto object-contain"
         unoptimized
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
 
-      {/* Content overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-3">
-        <CategoryBadge category={post.category} className="text-[9px] px-1.5 py-0.5 mb-1.5" />
+      {/* Content below flyer */}
+      <div className="p-2 border-t border-border/50">
+        <CategoryBadge category={post.category} className="text-[9px] px-1.5 py-0.5 mb-1" />
         <h4 className="text-xs font-semibold text-foreground line-clamp-2 leading-snug">
           {post.title}
         </h4>
-        <div className="flex items-center gap-2 mt-1.5 text-muted-foreground">
+        <div className="flex items-center gap-2 mt-1 text-muted-foreground">
           <span className="inline-flex items-center gap-0.5 text-[10px]">
             <Heart className="w-3 h-3" /> {post.likes}
           </span>

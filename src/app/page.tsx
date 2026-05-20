@@ -184,7 +184,7 @@ function ScreenRenderer() {
     profile: <ProfileScreen />,
   }
 
-  // Home screen manages its own full-height layout (TikTok-style feed)
+  // Home screen manages its own full-height layout
   // Other screens use standard scrollable layout with bottom padding
   if (activeTab === 'home') {
     return (

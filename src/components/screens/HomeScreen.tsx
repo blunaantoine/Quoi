@@ -406,42 +406,20 @@ function FeedCard({ post }: { post: OppPost }) {
 
   return (
     <div
-      className="relative h-full w-full select-none overflow-hidden bg-background scroll-snap-align-start"
+      className="relative w-full select-none overflow-y-auto bg-background scroll-snap-align-start"
       onClick={handleTap}
     >
-      {/* ── Flyer background ── */}
-      <Image
-        src={post.flyer}
-        alt={post.title}
-        fill
-        className="object-cover"
-        priority
-        unoptimized
-      />
-
-      {/* ── Gradient overlays ── */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-transparent" />
-
-      {/* ── Top tags row ── */}
-      <div className="absolute left-4 right-16 top-4 z-10 flex flex-wrap gap-1.5">
-        {post.tags.map((tag) => {
-          const cfg = tagConfig[tag]
-          const TagIcon = cfg.icon
-          return (
-            <span
-              key={tag}
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold backdrop-blur-sm',
-                cfg.color,
-                cfg.textColor
-              )}
-            >
-              <TagIcon className="h-3 w-3" />
-              {tag}
-            </span>
-          )
-        })}
+      {/* ── Flyer image — full size, no crop, no dark overlay ── */}
+      <div className="relative w-full">
+        <Image
+          src={post.flyer}
+          alt={post.title}
+          width={800}
+          height={1200}
+          className="w-full h-auto object-contain"
+          priority
+          unoptimized
+        />
       </div>
 
       {/* ── Double-tap heart animation ── */}
@@ -451,129 +429,133 @@ function FeedCard({ post }: { post: OppPost }) {
         </div>
       )}
 
-      {/* ── Bottom content ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pb-5">
-        <div className="flex gap-3">
-          {/* Left: text content */}
-          <div className="flex-1 min-w-0">
-            {/* Category + Mode row */}
-            <div className="mb-2 flex flex-wrap items-center gap-2">
+      {/* ── Info panel below flyer ── */}
+      <div className="relative z-10 bg-background border-t border-border/50">
+        {/* Top row: tags */}
+        <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
+          {post.tags.map((tag) => {
+            const cfg = tagConfig[tag]
+            const TagIcon = cfg.icon
+            return (
               <span
+                key={tag}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-sm',
-                  cat.color,
-                  cat.textColor,
-                  cat.borderColor
+                  'inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold',
+                  cfg.color,
+                  cfg.textColor
                 )}
               >
-                <CatIcon className="h-3.5 w-3.5" />
-                {cat.label}
+                <TagIcon className="h-3 w-3" />
+                {tag}
               </span>
-              <span
-                className={cn(
-                  'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold backdrop-blur-sm',
-                  modeStyles[post.mode]
-                )}
-              >
-                {post.mode}
-              </span>
+            )
+          })}
+        </div>
+
+        {/* Title */}
+        <h2 className="px-4 pt-2 text-lg font-bold leading-snug text-foreground line-clamp-2">
+          {post.title}
+        </h2>
+
+        {/* Description */}
+        <p className="px-4 pt-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+          {post.description}
+        </p>
+
+        {/* Category + Mode + Location + Deadline */}
+        <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
+          <span
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold',
+              cat.color,
+              cat.textColor,
+              cat.borderColor
+            )}
+          >
+            <CatIcon className="h-3.5 w-3.5" />
+            {cat.label}
+          </span>
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold',
+              modeStyles[post.mode]
+            )}
+          >
+            {post.mode}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="h-3.5 w-3.5" />
+            {post.location}
+          </span>
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold',
+              deadline.expired
+                ? 'bg-red-500/20 text-red-400'
+                : deadline.urgent
+                  ? 'bg-red-500/20 text-red-400'
+                  : 'bg-secondary text-muted-foreground'
+            )}
+          >
+            <Clock className="h-3 w-3" />
+            {deadline.text}
+          </span>
+        </div>
+
+        {/* Author + Action buttons row */}
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Author */}
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="relative h-8 w-8 shrink-0 rounded-full ring-2 ring-border overflow-hidden">
+              <Image
+                src={post.author.avatar}
+                alt={post.author.name}
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
             </div>
-
-            {/* Title */}
-            <h2 className="mb-1 text-lg font-bold leading-snug text-white line-clamp-2 drop-shadow-lg">
-              {post.title}
-            </h2>
-
-            {/* Description */}
-            <p className="mb-3 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-              {post.description}
-            </p>
-
-            {/* Location + Deadline */}
-            <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs">
-              <span className="inline-flex items-center gap-1 text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
-                {post.location}
-              </span>
-
-              <span
-                className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold',
-                  deadline.expired
-                    ? 'bg-red-500/20 text-red-400'
-                    : deadline.urgent
-                      ? 'bg-red-500/20 text-red-400'
-                      : 'bg-secondary text-muted-foreground'
-                )}
-              >
-                <Clock className="h-3 w-3" />
-                {deadline.text}
-              </span>
-            </div>
-
-            {/* Participer button */}
-            <a
-              href={post.externalLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Participer
-            </a>
-
-            {/* Author row with Suivre button */}
-            <div className="mt-3 flex items-center gap-2">
-              <div className="relative h-8 w-8 shrink-0 rounded-full ring-2 ring-border overflow-hidden">
-                <Image
-                  src={post.author.avatar}
-                  alt={post.author.name}
-                  width={32}
-                  height={32}
-                  className="h-full w-full object-cover"
-                  unoptimized
-                />
-              </div>
-              <span className="text-sm font-medium text-foreground">
-                {post.author.name}
-              </span>
-              {post.author.verified && (
-                <VerifiedBadge size="sm" />
+            <span className="text-sm font-medium text-foreground truncate">
+              {post.author.name}
+            </span>
+            {post.author.verified && (
+              <VerifiedBadge size="sm" />
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setFollowing((prev) => !prev)
+              }}
+              className={cn(
+                'rounded-full px-3 py-1 text-[11px] font-semibold transition-all',
+                following
+                  ? 'bg-secondary text-muted-foreground border border-border'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
               )}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setFollowing((prev) => !prev)
-                }}
-                className={cn(
-                  'ml-auto rounded-full px-3 py-1 text-[11px] font-semibold transition-all',
-                  following
-                    ? 'bg-secondary text-muted-foreground border border-border'
-                    : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                )}
-              >
-                {following ? 'Suivi' : 'Suivre'}
-              </button>
-            </div>
+            >
+              {following ? 'Suivi' : 'Suivre'}
+            </button>
           </div>
+        </div>
 
-          {/* Right: action bar */}
-          <div className="flex flex-col items-center gap-5 pt-2">
+        {/* Action buttons + Participer */}
+        <div className="flex items-center justify-between px-4 pb-3">
+          <div className="flex items-center gap-4">
             {/* Like */}
             <button
               type="button"
               onClick={toggleLike}
-              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
+              className="flex items-center gap-1.5 active:scale-90 transition-transform"
               aria-label={liked ? 'Retirer le like' : 'Aimer'}
             >
               <Heart
                 className={cn(
-                  'h-7 w-7 transition-colors drop-shadow-lg',
-                  liked ? 'fill-red-500 text-red-500' : 'text-white'
+                  'h-6 w-6 transition-colors',
+                  liked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-[11px] font-semibold text-white drop-shadow">
+              <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(likeCount)}
               </span>
             </button>
@@ -582,11 +564,11 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={handleComment}
-              className="flex flex-col items-center gap-0.5"
+              className="flex items-center gap-1.5"
               aria-label="Commenter"
             >
-              <MessageCircle className="h-7 w-7 text-white drop-shadow-lg" />
-              <span className="text-[11px] font-semibold text-white drop-shadow">
+              <MessageCircle className="h-6 w-6 text-muted-foreground" />
+              <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(commentCount)}
               </span>
             </button>
@@ -595,11 +577,11 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={handleShare}
-              className="flex flex-col items-center gap-0.5"
+              className="flex items-center gap-1.5"
               aria-label="Partager"
             >
-              <Share2 className="h-7 w-7 text-white drop-shadow-lg" />
-              <span className="text-[11px] font-semibold text-white drop-shadow">
+              <Share2 className="h-6 w-6 text-muted-foreground" />
+              <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(post.shares)}
               </span>
             </button>
@@ -608,20 +590,32 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={toggleSave}
-              className="flex flex-col items-center gap-0.5 active:scale-80 transition-transform"
+              className="flex items-center gap-1.5 active:scale-90 transition-transform"
               aria-label={saved ? 'Retirer des favoris' : 'Enregistrer'}
             >
               <Bookmark
                 className={cn(
-                  'h-7 w-7 transition-colors drop-shadow-lg',
-                  saved ? 'fill-primary text-primary' : 'text-white'
+                  'h-6 w-6 transition-colors',
+                  saved ? 'fill-primary text-primary' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-[11px] font-semibold text-white drop-shadow">
+              <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(post.saves)}
               </span>
             </button>
           </div>
+
+          {/* Participer button */}
+          <a
+            href={post.externalLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            Participer
+          </a>
         </div>
       </div>
     </div>
@@ -753,12 +747,11 @@ export default function HomeScreen() {
         <div className="h-4 bg-gradient-to-b from-background/60 to-transparent pointer-events-none" />
       </div>
 
-      {/* ── Vertical snap scroll feed ── */}
+      {/* ── Vertical scroll feed ── */}
       <div
         ref={scrollRef}
         className="h-full w-full overflow-y-scroll"
         style={{
-          scrollSnapType: 'y mandatory',
           WebkitOverflowScrolling: 'touch',
         }}
       >
@@ -766,11 +759,7 @@ export default function HomeScreen() {
           filteredPosts.map((post) => (
             <div
               key={post.id}
-              className="w-full animate-fade-in"
-              style={{
-                height: 'calc(100vh - 64px)',
-                scrollSnapAlign: 'start',
-              }}
+              className="w-full animate-fade-in border-b border-border/30"
             >
               <FeedCard post={post} />
             </div>
