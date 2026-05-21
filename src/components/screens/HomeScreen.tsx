@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef, useMemo } from 'react'
 import Image from 'next/image'
 import {
-  Zap,
   Search,
   Heart,
   MessageCircle,
@@ -14,6 +13,7 @@ import {
   Clock,
   CheckCircle2,
   Sparkles,
+  Zap,
   X,
   Copy,
   Send,
@@ -188,7 +188,6 @@ function CommentPanel() {
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Derive comments from mock data + locally added comments
   const comments = useMemo(() => {
     if (!selectedPostId) return []
     return [
@@ -202,13 +201,11 @@ function CommentPanel() {
       const next = new Set(prev)
       if (next.has(commentId)) {
         next.delete(commentId)
-        // Decrement likes on addedComments
         setAddedComments((prev) =>
           prev.map((c) => c.id === commentId ? { ...c, likes: Math.max(0, c.likes - 1) } : c)
         )
       } else {
         next.add(commentId)
-        // Increment likes on addedComments (for new comments) or track for mock comments
         setAddedComments((prev) => {
           const exists = prev.find((c) => c.id === commentId)
           if (exists) {
@@ -247,7 +244,6 @@ function CommentPanel() {
       />
       <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
         <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl flex flex-col max-h-[70vh]">
-          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h3 className="text-base font-bold text-foreground">
               Commentaires ({comments.length})
@@ -260,7 +256,6 @@ function CommentPanel() {
             </button>
           </div>
 
-          {/* Comments list */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {comments.length > 0 ? (
               comments.map((comment) => (
@@ -312,7 +307,6 @@ function CommentPanel() {
             )}
           </div>
 
-          {/* Comment input */}
           <div className="p-3 border-t border-border flex items-center gap-2">
             <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
               <Image
@@ -363,7 +357,6 @@ function FeedCard({ post }: { post: OppPost }) {
   const cat = getCategory(post.category)
   const CatIcon = cat.icon
 
-  // Double-tap to like
   const handleTap = useCallback(() => {
     const now = Date.now()
     if (now - lastTapRef.current < 300) {
@@ -406,7 +399,7 @@ function FeedCard({ post }: { post: OppPost }) {
 
   return (
     <div
-      className="relative w-full select-none overflow-y-auto bg-background scroll-snap-align-start"
+      className="relative w-full select-none bg-card rounded-2xl overflow-hidden shadow-sm border border-border/40"
       onClick={handleTap}
     >
       {/* ── Flyer image — full size, no crop, no dark overlay ── */}
@@ -430,9 +423,9 @@ function FeedCard({ post }: { post: OppPost }) {
       )}
 
       {/* ── Info panel below flyer ── */}
-      <div className="relative z-10 bg-background border-t border-border/50">
+      <div className="relative z-10 bg-card px-4 pt-3 pb-4">
         {/* Top row: tags */}
-        <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
+        <div className="flex flex-wrap items-center gap-2">
           {post.tags.map((tag) => {
             const cfg = tagConfig[tag]
             const TagIcon = cfg.icon
@@ -453,17 +446,17 @@ function FeedCard({ post }: { post: OppPost }) {
         </div>
 
         {/* Title */}
-        <h2 className="px-4 pt-2 text-lg font-bold leading-snug text-foreground line-clamp-2">
+        <h2 className="pt-2 text-lg font-bold leading-snug text-foreground line-clamp-2">
           {post.title}
         </h2>
 
         {/* Description */}
-        <p className="px-4 pt-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+        <p className="pt-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">
           {post.description}
         </p>
 
         {/* Category + Mode + Location + Deadline */}
-        <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
+        <div className="pt-3 flex flex-wrap items-center gap-2">
           <span
             className={cn(
               'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold',
@@ -502,9 +495,11 @@ function FeedCard({ post }: { post: OppPost }) {
           </span>
         </div>
 
-        {/* Author + Action buttons row */}
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Author */}
+        {/* Divider */}
+        <div className="my-3 h-px bg-border/50" />
+
+        {/* Author + Follow */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
             <div className="relative h-8 w-8 shrink-0 rounded-full ring-2 ring-border overflow-hidden">
               <Image
@@ -522,26 +517,29 @@ function FeedCard({ post }: { post: OppPost }) {
             {post.author.verified && (
               <VerifiedBadge size="sm" />
             )}
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setFollowing((prev) => !prev)
-              }}
-              className={cn(
-                'rounded-full px-3 py-1 text-[11px] font-semibold transition-all',
-                following
-                  ? 'bg-secondary text-muted-foreground border border-border'
-                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
-              )}
-            >
-              {following ? 'Suivi' : 'Suivre'}
-            </button>
           </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setFollowing((prev) => !prev)
+            }}
+            className={cn(
+              'rounded-full px-3 py-1 text-[11px] font-semibold transition-all',
+              following
+                ? 'bg-secondary text-muted-foreground border border-border'
+                : 'bg-primary text-primary-foreground hover:bg-primary/90'
+            )}
+          >
+            {following ? 'Suivi' : 'Suivre'}
+          </button>
         </div>
 
-        {/* Action buttons + Participer */}
-        <div className="flex items-center justify-between px-4 pb-3">
-          <div className="flex items-center gap-4">
+        {/* Divider */}
+        <div className="my-3 h-px bg-border/50" />
+
+        {/* Action buttons row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-5">
             {/* Like */}
             <button
               type="button"
@@ -551,7 +549,7 @@ function FeedCard({ post }: { post: OppPost }) {
             >
               <Heart
                 className={cn(
-                  'h-6 w-6 transition-colors',
+                  'h-5 w-5 transition-colors',
                   liked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                 )}
               />
@@ -567,7 +565,7 @@ function FeedCard({ post }: { post: OppPost }) {
               className="flex items-center gap-1.5"
               aria-label="Commenter"
             >
-              <MessageCircle className="h-6 w-6 text-muted-foreground" />
+              <MessageCircle className="h-5 w-5 text-muted-foreground" />
               <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(commentCount)}
               </span>
@@ -580,7 +578,7 @@ function FeedCard({ post }: { post: OppPost }) {
               className="flex items-center gap-1.5"
               aria-label="Partager"
             >
-              <Share2 className="h-6 w-6 text-muted-foreground" />
+              <Share2 className="h-5 w-5 text-muted-foreground" />
               <span className="text-xs font-semibold text-muted-foreground">
                 {formatCount(post.shares)}
               </span>
@@ -595,7 +593,7 @@ function FeedCard({ post }: { post: OppPost }) {
             >
               <Bookmark
                 className={cn(
-                  'h-6 w-6 transition-colors',
+                  'h-5 w-5 transition-colors',
                   saved ? 'fill-primary text-primary' : 'text-muted-foreground'
                 )}
               />
@@ -647,7 +645,6 @@ export default function HomeScreen() {
     return posts
   }, [activeCategory, searchQuery])
 
-  // Reset scroll position when filter changes
   const handleCategoryChange = useCallback(
     (slug: CategorySlug | 'all') => {
       setActiveCategory(slug)
@@ -659,25 +656,22 @@ export default function HomeScreen() {
   )
 
   return (
-    <div className="relative h-[calc(100vh-64px)] w-full overflow-hidden bg-background">
-      {/* ── Sticky header overlay ── */}
-      <div className="absolute inset-x-0 top-0 z-30 pointer-events-none">
+    <div className="relative h-[calc(100vh-64px)] w-full flex flex-col bg-background">
+      {/* ── Solid header (not overlapping) ── */}
+      <div className="shrink-0 bg-background border-b border-border/30">
+        {/* Logo + Search row */}
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <div className="flex items-center gap-2 animate-slide-down">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Zap className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <h1 className="text-xl font-bold text-foreground drop-shadow-lg">
-                O<span className="text-[#D1F550]">QUI</span>
-              </h1>
-            </div>
+          <div className="flex items-center gap-2">
+            <img
+              src="/oqui-logo.png"
+              alt="OQUI"
+              className="h-8 w-auto object-contain"
+            />
           </div>
 
           <button
-            className="pointer-events-auto h-9 w-9 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors animate-slide-down active:scale-90"
+            className="h-9 w-9 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors active:scale-90"
             onClick={() => setShowSearch(!showSearch)}
-            style={{ animationDelay: '0.1s' }}
           >
             <Search className="w-4 h-4" />
           </button>
@@ -685,7 +679,7 @@ export default function HomeScreen() {
 
         {/* Search bar (expandable) */}
         <div
-          className={`overflow-hidden pointer-events-auto transition-all duration-200 ${
+          className={`overflow-hidden transition-all duration-200 ${
             showSearch ? 'max-h-16 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
@@ -697,7 +691,7 @@ export default function HomeScreen() {
                 placeholder="Rechercher des opportunités..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 bg-card/90 backdrop-blur-sm border border-border text-foreground placeholder:text-muted-foreground rounded-xl h-10 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                className="w-full pl-9 pr-4 bg-card border border-border text-foreground placeholder:text-muted-foreground rounded-xl h-10 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                 autoFocus
               />
             </div>
@@ -705,18 +699,14 @@ export default function HomeScreen() {
         </div>
 
         {/* ── Category filter pills ── */}
-        <div
-          className="pointer-events-auto px-4 pb-3 flex gap-2 overflow-x-auto no-scrollbar animate-slide-down"
-          style={{ animationDelay: '0.15s' }}
-        >
-          {/* All pill */}
+        <div className="px-4 pb-3 flex gap-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => handleCategoryChange('all')}
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all shrink-0',
               activeCategory === 'all'
                 ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
-                : 'bg-card/80 backdrop-blur-sm text-muted-foreground border-border/50 hover:border-primary/30 hover:text-primary'
+                : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-primary'
             )}
           >
             Tout
@@ -730,10 +720,10 @@ export default function HomeScreen() {
                 key={cat.slug}
                 onClick={() => handleCategoryChange(cat.slug)}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all shrink-0 backdrop-blur-sm',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all shrink-0',
                   isActive
                     ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
-                    : 'bg-card/80 text-muted-foreground border-border/50 hover:border-primary/30 hover:text-primary'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-primary'
                 )}
               >
                 <Icon className="w-3 h-3" />
@@ -742,28 +732,22 @@ export default function HomeScreen() {
             )
           })}
         </div>
-
-        {/* Fade gradient at bottom of header */}
-        <div className="h-4 bg-gradient-to-b from-background/60 to-transparent pointer-events-none" />
       </div>
 
       {/* ── Vertical scroll feed ── */}
       <div
         ref={scrollRef}
-        className="h-full w-full overflow-y-scroll"
+        className="flex-1 w-full overflow-y-scroll px-3"
         style={{
           WebkitOverflowScrolling: 'touch',
         }}
       >
         {filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
-            <div
-              key={post.id}
-              className="w-full animate-fade-in border-b border-border/30"
-            >
-              <FeedCard post={post} />
-            </div>
-          ))
+          <div className="flex flex-col gap-4 py-4 pb-20">
+            {filteredPosts.map((post) => (
+              <FeedCard key={post.id} post={post} />
+            ))}
+          </div>
         ) : (
           <div
             className="flex flex-col items-center justify-center text-center px-8"
