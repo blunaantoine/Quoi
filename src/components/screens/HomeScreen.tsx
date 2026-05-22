@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef, useMemo } from 'react'
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import {
   Search,
@@ -182,132 +182,160 @@ function ShareSheet() {
 // ─── Comment Panel Component ─────────────────────────────────────
 
 function CommentPanel() {
-  const { showComments, setShowComments, selectedPostId } = useAppStore()
+  const {
+    showComments,
+    setShowComments,
+    selectedPostId,
+    userComments,
+    addComment,
+    likedCommentIds,
+    toggleCommentLike,
+  } = useAppStore()
   const [commentText, setCommentText] = useState('')
-  const [addedComments, setAddedComments] = useState<Comment[]>([])
-  const [likedComments, setLikedComments] = useState<Set<string>>(new Set())
   const inputRef = useRef<HTMLInputElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Combine mock comments + user-added comments from global store
   const comments = useMemo(() => {
     if (!selectedPostId) return []
     return [
       ...mockComments.filter((c) => c.postId === selectedPostId),
-      ...addedComments.filter((c) => c.postId === selectedPostId),
+      ...userComments.filter((c) => c.postId === selectedPostId),
     ]
-  }, [selectedPostId, addedComments])
+  }, [selectedPostId, userComments])
 
-  const handleLikeComment = useCallback((commentId: string, currentLikes: number) => {
-    setLikedComments((prev) => {
-      const next = new Set(prev)
-      if (next.has(commentId)) {
-        next.delete(commentId)
-        setAddedComments((prev) =>
-          prev.map((c) => c.id === commentId ? { ...c, likes: Math.max(0, c.likes - 1) } : c)
-        )
-      } else {
-        next.add(commentId)
-        setAddedComments((prev) => {
-          const exists = prev.find((c) => c.id === commentId)
-          if (exists) {
-            return prev.map((c) => c.id === commentId ? { ...c, likes: c.likes + 1 } : c)
-          }
-          return prev
-        })
-      }
-      return next
-    })
-  }, [])
+  // Auto-scroll to bottom when new comment is added
+  useEffect(() => {
+    if (showComments && scrollRef.current) {
+      // Small delay to let the new comment render
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+      }, 100)
+    }
+  }, [comments.length, showComments])
+
+  // Focus input when panel opens
+  useEffect(() => {
+    if (showComments) {
+      setTimeout(() => inputRef.current?.focus(), 300)
+    }
+  }, [showComments])
 
   const handleSubmit = useCallback(() => {
-    if (!commentText.trim() || !selectedPostId) return
+    if (!commentText.trim() || !selectedPostId || isSubmitting) return
+
+    setIsSubmitting(true)
     const newComment: Comment = {
-      id: `cm_new_${Date.now()}`,
+      id: `cm_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
       postId: selectedPostId,
       author: currentOppUser,
       text: commentText.trim(),
       timestamp: new Date().toISOString(),
       likes: 0,
     }
-    setAddedComments((prev) => [...prev, newComment])
+
+    // Add to global store (persists across open/close)
+    addComment(newComment)
     setCommentText('')
-    toast('Commentaire ajouté !')
-    inputRef.current?.focus()
-  }, [commentText, selectedPostId])
+    toast.success('Commentaire ajouté !')
+
+    // Re-focus input for rapid commenting
+    setTimeout(() => {
+      inputRef.current?.focus()
+      setIsSubmitting(false)
+    }, 50)
+  }, [commentText, selectedPostId, isSubmitting, addComment])
+
+  const handleClose = useCallback(() => {
+    setShowComments(false)
+  }, [setShowComments])
 
   if (!showComments || !selectedPostId) return null
 
   return (
     <>
+      {/* Backdrop */}
       <div
         className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-fade-in"
-        onClick={() => setShowComments(false)}
+        onClick={handleClose}
       />
+      {/* Panel */}
       <div className="fixed inset-x-0 bottom-0 z-[70] animate-slide-up">
-        <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl flex flex-col max-h-[70vh]">
-          <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="mx-auto max-w-lg bg-card border-t border-border rounded-t-2xl flex flex-col max-h-[75vh]">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
             <h3 className="text-base font-bold text-foreground">
               Commentaires ({comments.length})
             </h3>
             <button
-              onClick={() => setShowComments(false)}
+              onClick={handleClose}
               className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Comments list */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[120px]">
             {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div key={comment.id} className="flex gap-3 animate-fade-slide-in">
-                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
-                    <Image
-                      src={comment.author.avatar}
-                      alt={comment.author.name}
-                      width={32}
-                      height={32}
-                      className="h-full w-full object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-foreground">
-                        {comment.author.name}
-                      </span>
-                      {comment.author.verified && (
-                        <VerifiedBadge size="xs" />
-                      )}
-                      <span className="text-[11px] text-muted-foreground ml-auto">
-                        {timeAgo(comment.timestamp)}
-                      </span>
+              comments.map((comment) => {
+                const isLiked = likedCommentIds.has(comment.id)
+                const isUserComment = comment.id.startsWith('cm_')
+                const displayLikes = comment.likes + (isLiked && !isUserComment ? 1 : 0)
+
+                return (
+                  <div key={comment.id} className="flex gap-3 animate-fade-slide-in">
+                    <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
+                      <Image
+                        src={comment.author.avatar}
+                        alt={comment.author.name}
+                        width={32}
+                        height={32}
+                        className="h-full w-full object-cover"
+                        unoptimized
+                      />
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
-                      {comment.text}
-                    </p>
-                    <button
-                      onClick={() => handleLikeComment(comment.id, comment.likes)}
-                      className={cn(
-                        'flex items-center gap-1 mt-1 transition-colors',
-                        likedComments.has(comment.id) ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                      )}
-                    >
-                      <ThumbsUp className="w-3 h-3" />
-                      <span className="text-[11px]">{comment.likes + (likedComments.has(comment.id) && !addedComments.find((c) => c.id === comment.id) ? 1 : 0)}</span>
-                    </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-semibold text-foreground">
+                          {comment.author.name}
+                        </span>
+                        {comment.author.verified && (
+                          <VerifiedBadge size="xs" />
+                        )}
+                        <span className="text-[11px] text-muted-foreground ml-auto shrink-0">
+                          {timeAgo(comment.timestamp)}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground/80 leading-relaxed mt-0.5 break-words">
+                        {comment.text}
+                      </p>
+                      <button
+                        onClick={() => toggleCommentLike(comment.id)}
+                        className={cn(
+                          'flex items-center gap-1 mt-1 transition-colors',
+                          isLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                        )}
+                      >
+                        <ThumbsUp className={cn('w-3 h-3', isLiked && 'fill-primary')} />
+                        <span className="text-[11px]">{displayLikes > 0 ? displayLikes : ''}</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                )
+              })
             ) : (
               <div className="text-center py-8">
-                <MessageCircle className="w-8 h-8 text-[#333333] mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Aucun commentaire pour le moment</p>
-                <p className="text-xs text-muted-foreground/70 mt-1">Soyez le premier à commenter !</p>
+                <MessageCircle className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm font-medium text-muted-foreground">Aucun commentaire</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Soyez le premier à réagir !</p>
               </div>
             )}
           </div>
 
-          <div className="p-3 border-t border-border flex items-center gap-2">
+          {/* Comment input */}
+          <div className="p-3 border-t border-border flex items-center gap-2 shrink-0">
             <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden ring-1 ring-border">
               <Image
                 src={currentOppUser.avatar}
@@ -323,14 +351,20 @@ function CommentPanel() {
               type="text"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
               placeholder="Écrire un commentaire..."
-              className="flex-1 bg-background border border-border rounded-full px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="flex-1 bg-background border border-border rounded-full px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+              disabled={isSubmitting}
             />
             <button
               onClick={handleSubmit}
-              disabled={!commentText.trim()}
-              className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed shrink-0 hover:bg-primary/90 transition-colors"
+              disabled={!commentText.trim() || isSubmitting}
+              className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed shrink-0 hover:bg-primary/90 transition-colors active:scale-90"
             >
               <Send className="w-4 h-4" />
             </button>
@@ -347,11 +381,13 @@ function FeedCard({ post }: { post: OppPost }) {
   const [liked, setLiked] = useState(post.liked)
   const [saved, setSaved] = useState(post.saved)
   const [likeCount, setLikeCount] = useState(post.likes)
-  const [commentCount, setCommentCount] = useState(post.comments)
   const [following, setFollowing] = useState(false)
   const [showHeart, setShowHeart] = useState(false)
   const lastTapRef = useRef(0)
-  const { setShowComments, setSelectedPostId, setShowShareSheet } = useAppStore()
+  const { setShowComments, setSelectedPostId, setShowShareSheet, getCommentCount } = useAppStore()
+
+  // Derive comment count from global store (updates when comments are added)
+  const commentCount = useAppStore((s) => s.getCommentCount(post.id, post.comments))
 
   const deadline = getDeadline(post.deadline)
   const cat = getCategory(post.category)
@@ -553,7 +589,10 @@ function FeedCard({ post }: { post: OppPost }) {
                   liked ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-xs font-semibold text-muted-foreground">
+              <span className={cn(
+                'text-xs font-semibold transition-colors',
+                liked ? 'text-red-500' : 'text-muted-foreground'
+              )}>
                 {formatCount(likeCount)}
               </span>
             </button>
@@ -562,11 +601,17 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={handleComment}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 transition-colors hover:text-primary"
               aria-label="Commenter"
             >
-              <MessageCircle className="h-5 w-5 text-muted-foreground" />
-              <span className="text-xs font-semibold text-muted-foreground">
+              <MessageCircle className={cn(
+                'h-5 w-5 transition-colors',
+                commentCount > 0 ? 'text-primary' : 'text-muted-foreground'
+              )} />
+              <span className={cn(
+                'text-xs font-semibold transition-colors',
+                commentCount > 0 ? 'text-primary' : 'text-muted-foreground'
+              )}>
                 {formatCount(commentCount)}
               </span>
             </button>
@@ -575,7 +620,7 @@ function FeedCard({ post }: { post: OppPost }) {
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 hover:text-primary transition-colors"
               aria-label="Partager"
             >
               <Share2 className="h-5 w-5 text-muted-foreground" />
@@ -597,7 +642,10 @@ function FeedCard({ post }: { post: OppPost }) {
                   saved ? 'fill-primary text-primary' : 'text-muted-foreground'
                 )}
               />
-              <span className="text-xs font-semibold text-muted-foreground">
+              <span className={cn(
+                'text-xs font-semibold transition-colors',
+                saved ? 'text-primary' : 'text-muted-foreground'
+              )}>
                 {formatCount(post.saves)}
               </span>
             </button>

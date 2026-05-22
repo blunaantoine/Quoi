@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Comment } from '@/lib/mock-data'
 
 export type TabType = 'home' | 'news' | 'add' | 'messages' | 'profile'
 export type AuthView = 'landing' | 'login' | 'signup'
@@ -84,6 +85,13 @@ interface AppState {
   setShowComments: (show: boolean) => void
   selectedPostId: string | null
   setSelectedPostId: (id: string | null) => void
+
+  // Comments data (global — persists across panel open/close)
+  userComments: Comment[]
+  addComment: (comment: Comment) => void
+  getCommentCount: (postId: string, baseCount: number) => number
+  toggleCommentLike: (commentId: string) => void
+  likedCommentIds: Set<string>
 
   // Share sheet
   showShareSheet: boolean
@@ -236,6 +244,33 @@ export const useAppStore = create<AppState>((set, get) => ({
   setShowComments: (show) => set({ showComments: show }),
   selectedPostId: null,
   setSelectedPostId: (id) => set({ selectedPostId: id }),
+
+  // Comments data
+  userComments: [],
+  addComment: (comment) => set((state) => ({
+    userComments: [...state.userComments, comment],
+  })),
+  getCommentCount: (postId, baseCount) => {
+    const state = get()
+    const addedCount = state.userComments.filter((c) => c.postId === postId).length
+    return baseCount + addedCount
+  },
+  likedCommentIds: new Set<string>(),
+  toggleCommentLike: (commentId) => set((state) => {
+    const next = new Set(state.likedCommentIds)
+    if (next.has(commentId)) {
+      next.delete(commentId)
+    } else {
+      next.add(commentId)
+    }
+    // Update likes count on the comment in userComments
+    const userComments = state.userComments.map((c) =>
+      c.id === commentId
+        ? { ...c, likes: next.has(commentId) ? c.likes + 1 : Math.max(0, c.likes - 1) }
+        : c
+    )
+    return { likedCommentIds: next, userComments }
+  }),
 
   // Share sheet
   showShareSheet: false,
