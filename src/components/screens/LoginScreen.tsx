@@ -542,12 +542,6 @@ export default function LoginScreen() {
     }
   }
 
-  // Demo login
-  const handleDemoLogin = () => {
-    toast('Connexion démo activée')
-    setLoggedIn(true)
-  }
-
   // ─── OTP Verification Step ──────────────────────────────────────
   if (showOtpStep) {
     return (
@@ -625,21 +619,6 @@ export default function LoginScreen() {
             </button>
           </div>
 
-          {/* Separator */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground font-medium">ou</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
-          {/* Skip verification (demo) */}
-          <Button
-            onClick={handleDemoLogin}
-            variant="outline"
-            className="w-full border-border text-foreground hover:bg-secondary hover:border-primary/30 font-semibold rounded-2xl h-11 text-sm"
-          >
-            Passer en mode démo
-          </Button>
         </div>
       </div>
     )
@@ -741,21 +720,6 @@ export default function LoginScreen() {
               Se connecter
             </>
           )}
-        </button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-black/15" />
-          <span className="text-xs text-black/40 font-medium">ou</span>
-          <div className="flex-1 h-px bg-black/15" />
-        </div>
-
-        {/* Demo Login */}
-        <button
-          onClick={handleDemoLogin}
-          className="w-full flex items-center justify-center bg-transparent border-2 border-black text-black rounded-2xl h-13 px-6 hover:bg-black/5 transition-all active:scale-[0.98] font-semibold text-sm"
-        >
-          Essayer en mode démo
         </button>
 
         {/* Sign up link */}

@@ -136,11 +136,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Current User
   currentUser: {
     id: '1',
-    name: 'Marie Dupont',
-    username: '@marie_dupont',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=marie&backgroundColor=D1F550',
-    bio: 'Chasseuse d\'opportunités | Tech & Innovation | Paris 🇫🇷',
-    location: 'Paris, France',
+    name: 'Brunel Luna Antoine',
+    username: '@blunaantoine',
+    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=Blunaantoine&backgroundColor=D1F550',
+    bio: 'Fondateur & Administrateur de OQUI | Lomé, Togo 🇹🇬',
+    location: 'Lomé, Togo',
     followers: 1247,
     following: 534,
     opportunities: 23,

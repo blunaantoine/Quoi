@@ -360,24 +360,6 @@ export default function SignupScreen() {
               {countdown > 0 ? `Renvoyer le code dans ${countdown}s` : 'Renvoyer le code'}
             </button>
           </div>
-
-          {/* Separator */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-black/10" />
-            <span className="text-xs text-black/40 font-medium">ou</span>
-            <div className="flex-1 h-px bg-black/10" />
-          </div>
-
-          {/* Skip verification (demo) */}
-          <button
-            onClick={() => {
-              toast('Connexion démo activée')
-              setLoggedIn(true)
-            }}
-            className="w-full bg-transparent border-2 border-black text-black rounded-2xl h-11 font-semibold text-sm hover:bg-black/5 transition-colors"
-          >
-            Passer en mode démo
-          </button>
         </div>
       </div>
     )

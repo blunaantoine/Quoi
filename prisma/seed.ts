@@ -52,19 +52,20 @@ async function main() {
   const hashedAdminPw = hashPassword("admin123");
   const hashedUserPw = hashPassword("password123");
 
-  // Admin user
+  // Admin user — blunaantoine@gmail.com / Antoine@228
+  const hashedAdminRealPw = hashPassword("Antoine@228");
   const admin = await prisma.user.create({
     data: {
-      email: "admin@oppy.com",
-      username: "admin",
-      password: hashedAdminPw,
+      email: "blunaantoine@gmail.com",
+      username: "blunaantoine",
+      password: hashedAdminRealPw,
       role: "admin",
       isVerified: true,
       profile: {
         create: {
-          displayName: "Admin OPPY",
-          bio: "Administrateur de la plateforme OPPY",
-          avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Admin",
+          displayName: "Brunel Luna Antoine",
+          bio: "Fondateur & Administrateur de OQUI",
+          avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Blunaantoine",
         },
       },
     },
@@ -486,8 +487,8 @@ async function main() {
   console.log(`✅ Created ${savedPostsData.length} saved posts`);
 
   console.log("\n🎉 Seeding complete!");
-  console.log("\n📋 Test Accounts:");
-  console.log("  Admin:    admin@oppy.com / admin123");
+  console.log("\n📋 Admin Account:");
+  console.log("  Admin:    blunaantoine@gmail.com / Antoine@228");
   console.log("  Manager:  manager1@oppy.com / password123");
   console.log("  Manager:  manager2@oppy.com / password123");
   console.log("  Certified: karim@oppy.com / password123");
